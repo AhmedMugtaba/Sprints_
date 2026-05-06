@@ -48,7 +48,6 @@
     /* ── Layout helpers ── */
     .section {
       padding: 64px var(--px);
-      border-bottom: 1px solid var(--line);
     }
     .section--hero { padding: 80px var(--px); position: relative; }
     .eyebrow {
@@ -611,9 +610,7 @@
   </style>
 </head>
 <body>
-<div class="page-wrap">
-
-  <!-- Status bar -->
+  <!-- Status bar — full width -->
   <div class="statusbar" role="banner">
     <div class="statusbar__left">
       <span><span class="dot" aria-hidden="true">●</span> seed-to-fruit / sprints</span>
@@ -626,11 +623,13 @@
     </div>
   </div>
 
-  <!-- Tick strip -->
+  <!-- Tick strip — full width -->
   <div class="tickstrip" aria-hidden="true" id="js-ticks"></div>
 
+<div class="page-wrap">
+
   <!-- Hero -->
-  <section class="section section--hero" style="border-bottom:1px solid var(--line);">
+  <section class="section section--hero">
     <p class="hero-eyebrow"># README · Sprints — by Seed to Fruit</p>
     <h1 class="hero-h1">SPRINTS<span class="cursor">_</span></h1>
     <p class="hero-sub">
@@ -925,12 +924,13 @@
   </div>
 
   <!-- Footer -->
+</div><!-- /page-wrap -->
+
+  <!-- Footer — full width -->
   <footer class="footer">
     <span>© 2026 Seed to Fruit. Confidential. For review only.</span>
     <span>seedtofruit.ca/sprints · main · v0.1.0</span>
   </footer>
-
-</div><!-- /page-wrap -->
 
   <script>
     // ── Tick strip ──
