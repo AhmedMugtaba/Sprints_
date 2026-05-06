@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sprints — Phase 01 · Seed to Fruit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Sprints brings together 8–12 people who have spent years inside a problem for two weeks of intensive remote work. By the end, a founding team emerges." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0c0c0a;
+      color: #e8e6df;
+      font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ── Tokens ── */
+    :root {
+      --bg:       #0c0c0a;
+      --fg:       #e8e6df;
+      --muted:    #7a7770;
+      --line:     rgba(232,230,223,0.12);
+      --accent:   #ff5722;
+      --accent-fg:#0c0c0a;
+      --card:     rgba(232,230,223,0.025);
+      --input:    rgba(232,230,223,0.04);
+      --green:    #7fb069;
+      --amber:    #e8b65a;
+      --json-key: #a8c4a0;
+      --px:       32px;
+    }
+
+    /* ── Layout helpers ── */
+    .section {
+      padding: 64px var(--px);
+      border-bottom: 1px solid var(--line);
+    }
+    .section--hero { padding: 80px var(--px); position: relative; }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .eyebrow .comment { color: var(--muted); margin-left: 12px; }
+    .h2 {
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .body-text { font-size: 14px; line-height: 1.7; color: var(--muted); }
+
+    /* ── Status bar ── */
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px var(--px);
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+    .statusbar__left, .statusbar__right { display: flex; gap: 24px; align-items: center; }
+    .statusbar .dot { color: var(--accent); }
+    .statusbar .open { color: var(--green); }
+
+    /* ── Tick strip ── */
+    .tickstrip {
+      display: flex;
+      align-items: flex-end;
+      height: 14px;
+      padding: 0 var(--px);
+      border-bottom: 1px solid var(--line);
+    }
+    .tick {
+      flex: 1;
+      border-right: 0.5px solid var(--line);
+    }
+    .tick--major { height: 14px; }
+    .tick--mid   { height: 8px; }
+    .tick--minor { height: 4px; }
+
+    /* ── Hero ── */
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      margin-bottom: 32px;
+      text-transform: uppercase;
+    }
+    .hero-h1 {
+      font-size: 78px;
+      font-weight: 500;
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      margin-bottom: 0;
+      color: var(--fg);
+    }
+    .hero-h1 .cursor { color: var(--accent); }
+    .hero-sub {
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--muted);
+      margin-top: 20px;
+      max-width: 800px;
+    }
+    .hero-sub .prefix { color: var(--accent); }
+    .thesis {
+      max-width: 800px;
+      padding: 24px 28px;
+      background: var(--card);
+      border-left: 2px solid var(--accent);
+      margin: 40px 0;
+    }
+    .thesis__label {
+      font-size: 11px;
+      letter-spacing: .16em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .thesis__body { font-size: 16px; line-height: 1.7; color: var(--fg); }
+    .cta-row { display: flex; align-items: center; gap: 20px; }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 22px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: none;
+      text-decoration: none;
+    }
+    .cta-btn:hover { background: #e84e1f; }
+    .cta-btn .dollar { opacity: .6; }
+    .cta-note { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+    .hero-stat {
+      position: absolute;
+      top: 80px;
+      right: var(--px);
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+      text-align: right;
+    }
+    .hero-stat .status-open { color: var(--accent); }
+
+    /* ── Why (commit log) ── */
+    .commit-row {
+      display: grid;
+      grid-template-columns: 60px 60px 1fr;
+      gap: 24px;
+      padding: 28px 0;
+      border-top: 1px solid var(--line);
+      align-items: baseline;
+    }
+    .commit-keyword { color: var(--accent); font-size: 13px; letter-spacing: .1em; }
+    .commit-num { color: var(--muted); font-size: 13px; }
+    .commit-title { font-size: 22px; font-weight: 500; line-height: 1.3; margin-bottom: 10px; letter-spacing: -0.01em; }
+    .commit-body { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 760px; }
+
+    /* ── How (build script) ── */
+    .build-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .build-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 2.4fr;
+      gap: 32px;
+      padding: 28px;
+      align-items: baseline;
+    }
+    .build-row + .build-row { border-top: 1px solid var(--line); }
+    .build-step-num { color: var(--accent); font-size: 12px; letter-spacing: .1em; }
+    .build-step-title { font-size: 18px; font-weight: 500; line-height: 1.25; }
+    .build-step-body { color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .build-footer {
+      border-top: 1px solid var(--line);
+      padding: 20px 28px;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(127,176,105,0.05);
+    }
+    .build-footer .check { color: var(--green); }
+
+    /* ── Equity ── */
+    .equity-bar-wrap { margin-bottom: 32px; }
+    .equity-bar {
+      display: flex;
+      height: 56px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .equity-slice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .06em;
+    }
+    .equity-bar-labels {
+      display: flex;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .equity-bar-label { padding-right: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    .json-block {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 24px;
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .json-brace  { color: var(--muted); }
+    .json-key    { color: var(--json-key); }
+    .json-num    { color: var(--accent); }
+    .json-comment{ color: var(--muted); }
+    .equity-callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .callout {
+      padding: 24px;
+      border: 1px solid var(--line);
+    }
+    .callout__label {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .callout__body { font-size: 14px; line-height: 1.7; color: var(--fg); }
+
+    /* ── Host ── */
+    .host-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .host-intro {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      letter-spacing: .04em;
+    }
+    .host-intro .prefix { color: var(--accent); margin-right: 6px; }
+    .host-name {
+      font-size: 80px;
+      font-weight: 500;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      margin-bottom: 20px;
+    }
+    .host-name .dot { color: var(--accent); }
+    .host-bio { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 560px; margin-bottom: 32px; }
+    .host-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+    .host-profile-card {
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .host-profile-label {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .host-portrait {
+      position: relative;
+      border: 1px solid var(--line);
+      margin: 16px;
+      aspect-ratio: 4/3;
+      background: rgba(232,230,223,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .host-portrait__filename {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      font-size: 11px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .host-portrait__replace {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      font-size: 11px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .host-profile-meta {
+      padding: 16px 20px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .host-profile-meta .toml-key { color: var(--muted); }
+    .host-profile-meta .toml-eq  { color: var(--muted); margin: 0 8px; }
+    .host-profile-meta a { color: var(--accent); }
+    @media (max-width: 767px) {
+      .host-name { font-size: 48px; }
+      .host-layout { grid-template-columns: 1fr; }
+    }
+
+    .host-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+    .duties-label {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .duties-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+    }
+    .duty-row {
+      padding: 14px 18px;
+      font-size: 13px;
+      line-height: 1.6;
+      display: flex;
+      gap: 12px;
+    }
+    .duty-row + .duty-row { border-top: 1px solid var(--line); }
+    .duty-num { color: var(--accent); flex: 0 0 auto; }
+
+    /* ── Cohort ── */
+    .cohort-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 32px;
+    }
+    .cohort-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .cohort-title { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; }
+    .cohort-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .cohort-pill-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .toml-rows { display: flex; flex-direction: column; gap: 12px; }
+    .toml-row {
+      display: grid;
+      grid-template-columns: 180px 12px 1fr;
+      gap: 16px;
+      font-size: 14px;
+      align-items: baseline;
+    }
+    .toml-key { color: var(--muted); letter-spacing: .06em; }
+    .toml-eq  { color: var(--muted); }
+    .toml-val { color: var(--fg); }
+
+    /* ── Apply ── */
+    .apply-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; }
+    .apply-info-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 18px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-top: 28px;
+    }
+    .apply-info-card .dollar { color: var(--accent); }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(12,12,10,0.88);
+      z-index: 100;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+    .modal-backdrop.is-open { display: flex; align-items: flex-start; justify-content: center; }
+    .modal {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      width: 100%;
+      max-width: 860px;
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .modal-close {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: .1em;
+      padding: 5px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .modal-close:hover { border-color: rgba(232,230,223,0.3); color: var(--fg); }
+    .modal-body { padding: 40px 28px; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 56px; }
+    .modal-info-title {
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 767px) {
+      .modal-grid { grid-template-columns: 1fr; }
+      .modal-body { padding: 28px 20px; }
+    }
+
+    /* ── Form ── */
+    .form { display: flex; flex-direction: column; gap: 18px; }
+    .form-field { display: flex; flex-direction: column; }
+    .form-label {
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .form-label .required { color: var(--accent); margin-left: 4px; }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: var(--input);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+    .form-input:focus, .form-textarea:focus {
+      outline: 1px solid var(--accent);
+      outline-offset: -1px;
+    }
+    .form-textarea { resize: vertical; min-height: 78px; }
+    .form-input[type="date"] { color-scheme: dark; }
+    .submit-btn {
+      margin-top: 8px;
+      padding: 14px 18px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+    .submit-btn:hover:not(:disabled) { background: #e84e1f; }
+    .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .form-error { font-size: 11px; color: #ff5722; margin-top: 4px; letter-spacing: .04em; }
+
+    /* ── Success state ── */
+    .success-panel {
+      padding: 32px 28px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .success-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .success-headline { font-size: 28px; line-height: 1.15; margin-bottom: 12px; color: var(--fg); }
+    .success-body { font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+    /* ── Closing ── */
+    .closing-note { font-size: 22px; line-height: 1.5; max-width: 920px; color: var(--fg); letter-spacing: -0.01em; }
+    .closing-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 24px var(--px);
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: .06em;
+    }
+
+    /* ── Responsive ── */
+
+    /* Cohort title: long identifier must wrap cleanly */
+    .cohort-title { overflow-wrap: break-word; word-break: break-all; }
+
+    /* JSON block: scroll horizontally rather than overflow */
+    .json-block { overflow-x: auto; }
+
+    /* CTA row wraps on narrow widths */
+    .cta-row { flex-wrap: wrap; }
+
+    @media (max-width: 1023px) {
+      :root { --px: 24px; }
+      .hero-h1 { font-size: 56px; }
+      .hero-stat { position: static; text-align: left; margin-top: 32px; }
+      .host-grid,
+      .apply-grid,
+      .equity-callouts { grid-template-columns: 1fr; }
+      .build-row { grid-template-columns: 48px 1fr; }
+      .build-step-body { grid-column: 2; }
+      .commit-row { grid-template-columns: 48px 48px 1fr; }
+    }
+    @media (max-width: 767px) {
+      :root { --px: 16px; }
+      .hero-h1 { font-size: 40px; }
+      .hero-sub { font-size: 20px; }
+      .statusbar__left .v-hide, .statusbar__left .m-hide { display: none; }
+      .statusbar__right { gap: 12px; font-size: 10px; }
+      .build-row { grid-template-columns: 1fr; gap: 12px; padding: 20px var(--px); }
+      .build-step-body { grid-column: unset; }
+      .commit-row { grid-template-columns: 1fr; gap: 8px; }
+      .commit-keyword, .commit-num { display: none; }
+      .toml-row { grid-template-columns: 100px 12px 1fr; font-size: 12px; }
+      .cohort-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .cohort-title { font-size: 20px; }
+      .h2 { font-size: 28px; }
+      /* Equity bar: hide label text on tiny slices, show only on founders */
+      .equity-bar-labels { display: none; }
+      .equity-slice { font-size: 11px; }
+      /* Footer stacks on mobile */
+      .footer { flex-direction: column; gap: 8px; }
+      /* Modal header wraps */
+      .modal-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px 20px; }
+      .modal-body { padding: 24px 16px; }
+      /* Section padding tighter */
+      .section { padding: 48px var(--px); }
+      .section--hero { padding: 56px var(--px) 48px; }
+      .host-name { font-size: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Status bar -->
+  <div class="statusbar" role="banner">
+    <div class="statusbar__left">
+      <span><span class="dot" aria-hidden="true">●</span> seed-to-fruit / sprints</span>
+      <span class="v-hide">v0.1.0</span>
+      <span class="m-hide">main</span>
+    </div>
+    <div class="statusbar__right">
+      <span>cohort_01.status: <span class="open">OPEN</span></span>
+      <span id="js-date">2026-05-05</span>
+    </div>
+  </div>
+
+  <!-- Tick strip -->
+  <div class="tickstrip" aria-hidden="true" id="js-ticks"></div>
+
+  <!-- Hero -->
+  <section class="section section--hero" style="border-bottom:1px solid var(--line);">
+    <p class="hero-eyebrow"># README · Sprints — by Seed to Fruit</p>
+    <h1 class="hero-h1">SPRINTS<span class="cursor">_</span></h1>
+    <p class="hero-sub">
+      <span class="prefix" aria-hidden="true">&gt; </span>an experiment in assembling companies, by Seed to Fruit
+    </p>
+
+    <div class="thesis" role="blockquote">
+      <div class="thesis__label">// thesis</div>
+      <p class="thesis__body">Sprints brings together 8–12 people who have spent years inside a problem: engineers, designers, and ex-founders. For two weeks of intensive work. By the end, everyone in the room owns a piece of what gets built.</p>
+    </div>
+
+    <div class="cta-row">
+      <button class="cta-btn" id="open-modal-btn">
+        <span class="dollar" aria-hidden="true">$</span> request_to_join <span aria-hidden="true">→</span>
+      </button>
+      <span class="cta-note">First cohort opening soon. Invite-only.</span>
+    </div>
+
+    <div class="hero-stat" aria-label="Sprint details">
+      <div>phase    : 01 / sprints</div>
+      <div>duration : 2 weeks</div>
+      <div>group    : 8–12</div>
+      <div>cohort   : 01</div>
+      <div class="status-open">status   : open</div>
+    </div>
+  </section>
+
+  <!-- Cohort 01 -->
+  <section class="section">
+    <p class="eyebrow"># 01 · Cohort 01 <span class="comment">// cohort_01.toml</span></p>
+    <div class="cohort-card">
+      <div class="cohort-header">
+        <div class="cohort-title">[teaching_kids_a_second_language]</div>
+        <button class="cohort-pill" onclick="document.getElementById('open-modal-btn').click()" style="cursor:pointer;background:none;">
+          <span class="cohort-pill-dot" aria-hidden="true"></span>
+          <span>Request to join</span>
+        </button>
+      </div>
+      <div class="toml-rows">
+        <div class="toml-row">
+          <span class="toml-key">format</span>
+          <span class="toml-eq">=</span>
+          <span class="toml-val">"Remote, full-time"</span>
+        </div>
+        <div class="toml-row">
+          <span class="toml-key">duration</span>
+          <span class="toml-eq">=</span>
+          <span class="toml-val">"2 weeks"</span>
+        </div>
+        <div class="toml-row">
+          <span class="toml-key">group_size</span>
+          <span class="toml-eq">=</span>
+          <span class="toml-val">"8–12 people"</span>
+        </div>
+        <div class="toml-row">
+          <span class="toml-key">sprint</span>
+          <span class="toml-eq">=</span>
+          <span class="toml-val">"first_sprint"</span>
+        </div>
+        <div class="toml-row">
+          <span class="toml-key">host</span>
+          <span class="toml-eq">=</span>
+          <span class="toml-val">"TBD"</span>
+        </div>
+        <div class="toml-row">
+          <span class="toml-key">dates</span>
+          <span class="toml-eq">=</span>
+          <span class="toml-val">"TBD"</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Host -->
+  <section id="host" class="section">
+    <p class="host-eyebrow"># COHORT_01 · Meet your host</p>
+    <div class="host-layout">
+      <!-- Left -->
+      <div>
+        <p class="host-intro"><span class="prefix" aria-hidden="true">&gt;</span> for two weeks, you'll build with:</p>
+        <div class="host-name">A host<span class="dot">.</span></div>
+        <p class="host-bio">A founder who has built, exited, or operated deep inside the problem space.</p>
+      </div>
+      <!-- Right: profile placeholder -->
+      <div class="host-profile-card">
+        <div class="host-profile-label">// host.profile</div>
+        <div class="host-portrait">
+          <span class="host-portrait__filename">portrait_01.jpg</span>
+          <svg width="80" height="90" viewBox="0 0 80 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="40" cy="28" r="20" stroke="rgba(232,230,223,0.15)" stroke-width="1.5"/>
+            <path d="M4 88 C4 66 76 66 76 88" stroke="rgba(232,230,223,0.15)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          <span class="host-portrait__replace">// replace with photo</span>
+        </div>
+        <div class="host-profile-meta">
+          <div><span class="toml-key">name</span><span class="toml-eq">:</span><span class="toml-val">"TBD"</span></div>
+          <div><span class="toml-key">link</span><span class="toml-eq">:</span><a href="#" class="toml-val">TBD</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Equity -->
+  <section id="equity" class="section">
+    <p class="eyebrow"># 02 · Equity for all <span class="comment">// cap_table.json</span></p>
+    <h2 class="h2">Everyone who shows up gets a piece.</h2>
+    <p class="body-text" style="max-width:720px;margin-bottom:40px;">When a company forms out of a Sprint, the cap table is split four ways. The 2–3 founders who continue own the majority. The rest is held for the people and partners who made the company possible.</p>
+
+    <!-- Stacked bar -->
+    <div class="equity-bar-wrap" role="img" aria-label="Equity split: 85% Founders, 7% Seed to Fruit, 5% The Room, 3% Host">
+      <div class="equity-bar">
+        <div class="equity-slice" style="width:85%;background:var(--accent);color:#fff;border-right:1px solid var(--bg);">85%</div>
+        <div class="equity-slice" style="width:7%;background:var(--green);color:var(--bg);border-right:1px solid var(--bg);">7%</div>
+        <div class="equity-slice" style="width:5%;background:var(--muted);color:#fff;border-right:1px solid var(--bg);">5%</div>
+        <div class="equity-slice" style="width:3%;background:var(--amber);color:var(--bg);">3%</div>
+      </div>
+      <div class="equity-bar-labels" aria-hidden="true">
+        <div class="equity-bar-label" style="width:85%">Founders</div>
+        <div class="equity-bar-label" style="width:7%">Seed to Fruit</div>
+        <div class="equity-bar-label" style="width:5%">The Room</div>
+        <div class="equity-bar-label" style="width:3%">Host</div>
+      </div>
+    </div>
+
+    <!-- JSON block -->
+    <div class="json-block" aria-label="Cap table JSON">
+      <span class="json-brace">{</span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"founders"</span><span class="json-brace">: </span><span class="json-num">0.85</span><span class="json-brace">,</span>  <span class="json-comment">// the 2–3 who continue</span></span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"seed_to_fruit"</span><span class="json-brace">: </span><span class="json-num">0.07</span><span class="json-brace">,</span></span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"host"</span><span class="json-brace">: </span><span class="json-num">0.03</span><span class="json-brace">,</span></span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"the_room"</span><span class="json-brace">: </span><span class="json-num">0.05</span>  <span class="json-comment">// everyone who showed up</span></span><br>
+      <span class="json-brace">}</span>
+    </div>
+
+    <!-- Callouts -->
+    <div class="equity-callouts">
+      <div class="callout">
+        <div class="callout__label">// activation</div>
+        <p class="callout__body">Equity only activates if a company forms. If no team continues, the whole thing dissolves and nobody gets anything. But if 2–3 people say "we're doing this," everyone who was in that room owns a piece.</p>
+      </div>
+      <div class="callout">
+        <div class="callout__label">// network</div>
+        <p class="callout__body">The people who don't continue become the company's most valuable asset: a small, dense network of operators and builders who already know the problem cold.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Why Sprints -->
+  <section id="why" class="section">
+    <p class="eyebrow"># 03 · Why Sprints</p>
+    <div>
+      <div class="commit-row">
+        <span class="commit-keyword">commit</span>
+        <span class="commit-num">01</span>
+        <div>
+          <div class="commit-title">99% of startups will fail.</div>
+          <p class="commit-body">Everyone says that most startups fail, and that's just the startup math. But is it? Or is it the predictable result of a specific way of assembling companies that almost nobody questions? We built Sprints to test that. It's an experiment in assembling companies.</p>
+        </div>
+      </div>
+      <div class="commit-row">
+        <span class="commit-keyword">commit</span>
+        <span class="commit-num">02</span>
+        <div>
+          <div class="commit-title">Right problem, right people, right time.</div>
+          <p class="commit-body">Almost everything else is secondary. Most accelerators will waste your time on: workshops, panels, pitch nights, and events. But the real work is in choosing the right problem, finding the right people, at the right time, and creating the conditions where a real company can emerge.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 How it works -->
+  <section id="how" class="section">
+    <p class="eyebrow"># 04 · How it works <span class="comment">// build_company.sh</span></p>
+    <div class="build-card">
+      <div class="build-row">
+        <span class="build-step-num">&gt; 01</span>
+        <div class="build-step-title">A problem is chosen.</div>
+        <p class="build-step-body">Seed to Fruit starts by picking something that is worth working on: an industry, a problem, or an idea. Something like "How homes get built", or "Teaching kids a second language". Real, specific, hard.</p>
+      </div>
+      <div class="build-row">
+        <span class="build-step-num">&gt; 02</span>
+        <div class="build-step-title">A room is assembled.</div>
+        <p class="build-step-body">We try to find 8 to 12 people who are the most relevant to the problem, people who know the industry in and out, engineers who've been hacking on it, founders who tried and failed, designers who've been thinking about it for years.</p>
+      </div>
+      <div class="build-row">
+        <span class="build-step-num">&gt; 03</span>
+        <div class="build-step-title">Two weeks, remote.</div>
+        <p class="build-step-body">Conditions designed and engineered for something to emerge. The Host anchors judgment. Everyone works on the problem together, no pitches, no demo days, just the work.</p>
+      </div>
+      <div class="build-row">
+        <span class="build-step-num">&gt; 04</span>
+        <div class="build-step-title">A founding team is selected.</div>
+        <p class="build-step-body">At the end, Seed to Fruit and the Host invite 3–5 of the strongest to form a company. Everyone else becomes a shareholder and part of the network around it.</p>
+      </div>
+      <div class="build-footer">
+        <span class="check" aria-hidden="true">✓</span> exit code 0 — founding team identified
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing note -->
+  <section class="section">
+    <div class="closing-eyebrow">// note</div>
+    <p class="closing-note">Sprints is Phase 1. After the two weeks, the founding team that emerges goes into a 3-month residency to build the company. We'll talk about that later. For now, it's just sprints.</p>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <span id="modal-title">## 06 · Request to join <span style="color:var(--muted);margin-left:8px;">// $ submit_request</span></span>
+        <button class="modal-close" id="modal-close-btn" aria-label="Close">ESC ✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-grid">
+          <!-- Left info -->
+          <div>
+            <div class="modal-info-title">Tell us about you.</div>
+            <p class="body-text" style="margin-bottom:0;">Sprints is invite-only. Tell us what you've built, what problem you can't stop thinking about, and why you want to be in the room.</p>
+            <div class="apply-info-card" aria-label="Application details">
+              <div><span class="dollar" aria-hidden="true">$</span> read_time = "~5 min"</div>
+              <div><span class="dollar" aria-hidden="true">$</span> response_time = "≤ 2 weeks"</div>
+              <div><span class="dollar" aria-hidden="true">$</span> deadline = "rolling"</div>
+              <div><span class="dollar" aria-hidden="true">$</span> required_fields = 6</div>
+            </div>
+          </div>
+          <!-- Form -->
+          <div id="form-container">
+            <form class="form" id="apply-form" novalidate>
+              <div id="form-error-banner" role="alert" aria-live="polite" style="display:none;padding:12px 14px;border:1px solid var(--accent);color:var(--accent);font-size:13px;"></div>
+
+              <div class="form-field">
+                <label class="form-label" for="name">Name<span class="required" aria-label="required">*</span></label>
+                <input class="form-input" type="text" id="name" name="name" required placeholder="Your full name" autocomplete="name" />
+                <span class="form-error" id="name-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="email">Email<span class="required" aria-label="required">*</span></label>
+                <input class="form-input" type="email" id="email" name="email" required placeholder="you@domain.com" autocomplete="email" />
+                <span class="form-error" id="email-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="phone">Phone<span class="required" aria-label="required">*</span></label>
+                <input class="form-input" type="tel" id="phone" name="phone" required placeholder="+1 234 567 890" autocomplete="tel" />
+                <span class="form-error" id="phone-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="dob">Date of birth<span class="required" aria-label="required">*</span></label>
+                <input class="form-input" type="date" id="dob" name="dob" required placeholder="YYYY-MM-DD" />
+                <span class="form-error" id="dob-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="builds">Previous builds (projects, websites, papers, etc.)<span class="required" aria-label="required">*</span></label>
+                <textarea class="form-input form-textarea" id="builds" name="builds" required rows="3" placeholder="Add links and short details for your previous work"></textarea>
+                <span class="form-error" id="builds-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="github">GitHub profile</label>
+                <input class="form-input" type="url" id="github" name="github" placeholder="https://github.com/username" />
+                <span class="form-error" id="github-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="linkedin">LinkedIn profile</label>
+                <input class="form-input" type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username" />
+                <span class="form-error" id="linkedin-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="resume">Resume link</label>
+                <input class="form-input" type="url" id="resume" name="resume" placeholder="https://example.com/resume.pdf" />
+                <span class="form-error" id="resume-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <!-- Honeypot -->
+              <div style="display:none;" aria-hidden="true">
+                <label for="website_url">Leave this empty</label>
+                <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off" />
+              </div>
+
+              <button type="submit" class="submit-btn" id="submit-btn">SUBMIT REQUEST →</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>© 2026 Seed to Fruit. Confidential. For review only.</span>
+    <span>seedtofruit.ca/sprints · main · v0.1.0</span>
+  </footer>
+
+  <script>
+    // ── Tick strip ──
+    (function () {
+      const strip = document.getElementById('js-ticks');
+      for (let i = 0; i < 80; i++) {
+        const d = document.createElement('div');
+        d.className = 'tick ' + (i % 10 === 0 ? 'tick--major' : i % 5 === 0 ? 'tick--mid' : 'tick--minor');
+        strip.appendChild(d);
+      }
+    })();
+
+    // ── Live date ──
+    (function () {
+      const el = document.getElementById('js-date');
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      el.textContent = `${y}-${m}-${d}`;
+    })();
+
+    // ── Modal ──
+    (function () {
+      const backdrop = document.getElementById('modal-backdrop');
+      const openBtn  = document.getElementById('open-modal-btn');
+      const closeBtn = document.getElementById('modal-close-btn');
+
+      function openModal() {
+        backdrop.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      }
+
+      function closeModal() {
+        backdrop.classList.remove('is-open');
+        document.body.style.overflow = '';
+        openBtn.focus();
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+
+      // Click outside the modal panel to close
+      backdrop.addEventListener('click', function (e) {
+        if (e.target === backdrop) closeModal();
+      });
+
+      // Escape key
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal();
+      });
+    })();
+
+    // ── Form ──
+    (function () {
+      const form      = document.getElementById('apply-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const container = document.getElementById('form-container');
+      const banner    = document.getElementById('form-error-banner');
+
+      const requiredFields = ['name', 'email', 'phone', 'dob', 'builds'];
+
+      function clearError(id) {
+        const el = document.getElementById(id + '-error');
+        if (el) el.textContent = '';
+      }
+
+      function setError(id, msg) {
+        const el = document.getElementById(id + '-error');
+        if (el) el.textContent = msg;
+      }
+
+      function validate() {
+        let valid = true;
+        requiredFields.forEach(function (id) {
+          clearError(id);
+          const el = document.getElementById(id);
+          if (!el.value.trim()) {
+            setError(id, 'This field is required.');
+            valid = false;
+          }
+        });
+
+        const emailEl = document.getElementById('email');
+        if (emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+          setError('email', 'Please enter a valid email address.');
+          valid = false;
+        }
+
+        ['github', 'linkedin', 'resume'].forEach(function (id) {
+          clearError(id);
+          const el = document.getElementById(id);
+          if (el.value.trim() && !/^https?:\/\/.+/.test(el.value.trim())) {
+            setError(id, 'Please enter a valid URL starting with https://');
+            valid = false;
+          }
+        });
+
+        return valid;
+      }
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        banner.style.display = 'none';
+
+        if (document.getElementById('website_url').value) return;
+        if (!validate()) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        const data = {
+          name:     document.getElementById('name').value.trim(),
+          email:    document.getElementById('email').value.trim(),
+          phone:    document.getElementById('phone').value.trim(),
+          dob:      document.getElementById('dob').value,
+          builds:   document.getElementById('builds').value.trim(),
+          github:   document.getElementById('github').value.trim(),
+          linkedin: document.getElementById('linkedin').value.trim(),
+          resume:   document.getElementById('resume').value.trim(),
+        };
+
+        const SUPABASE_URL = 'https://jmxazjsaxthmogglgxrz.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_ETL0y1Gawm9JCFgUmYFGIA_1ypH99Ct';
+
+        try {
+          const res = await fetch(SUPABASE_URL + '/rest/v1/sprints_applications', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY,
+              'Prefer': 'return=minimal',
+            },
+            body: JSON.stringify(data),
+          });
+
+          if (!res.ok) {
+            const err = await res.text();
+            throw new Error(err || 'Server error: ' + res.status);
+          }
+
+          container.innerHTML = `
+            <div class="success-panel" role="status">
+              <div class="success-eyebrow">Request received</div>
+              <div class="success-headline">Thanks. We'll be in touch.</div>
+              <p class="success-body">Sprints is invite-only. We read every request personally. If your background fits an upcoming cohort, you'll hear from us within two weeks.</p>
+            </div>
+          `;
+        } catch (err) {
+          banner.textContent = 'Something went wrong. Please check your connection and try again.';
+          banner.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'SUBMIT REQUEST →';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
