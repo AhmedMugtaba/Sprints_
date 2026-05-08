@@ -592,7 +592,7 @@
     }
     .modal-close:hover { border-color: rgba(232,230,223,0.3); color: var(--fg); }
     .modal-body { padding: 40px 28px; }
-    .modal-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 56px; }
+    .modal-centered { max-width: 600px; margin: 0 auto; }
     .modal-info-title {
       font-size: 28px;
       font-weight: 500;
@@ -601,7 +601,6 @@
       margin-bottom: 16px;
     }
     @media (max-width: 767px) {
-      .modal-grid { grid-template-columns: 1fr; }
       .modal-body { padding: 28px 20px; }
     }
 
@@ -968,18 +967,9 @@
         <button class="modal-close" id="modal-close-btn" aria-label="Close">ESC ✕</button>
       </div>
       <div class="modal-body">
-        <div class="modal-grid">
-          <!-- Left info -->
-          <div>
-            <div class="modal-info-title">Tell us about you.</div>
-            <p class="body-text" style="margin-bottom:0;">Sprints is invite-only. Tell us what you've built, what problem you can't stop thinking about, and why you want to be in the room.</p>
-            <div class="apply-info-card" aria-label="Application details">
-              <div><span class="dollar" aria-hidden="true">$</span> read_time = "~5 min"</div>
-              <div><span class="dollar" aria-hidden="true">$</span> response_time = "≤ 2 weeks"</div>
-              <div><span class="dollar" aria-hidden="true">$</span> deadline = "rolling"</div>
-              <div><span class="dollar" aria-hidden="true">$</span> required_fields = 6</div>
-            </div>
-          </div>
+        <div class="modal-centered">
+          <div class="modal-info-title">Tell us about you.</div>
+          <p class="body-text" style="margin-bottom:32px;">Sprints is invite-only. Tell us what you've built, what problem you can't stop thinking about, and why you want to be in the room.</p>
           <!-- Form -->
           <div id="form-container">
             <form class="form" id="apply-form" novalidate>
@@ -1011,7 +1001,7 @@
 
               <div class="form-field">
                 <label class="form-label" for="builds">Previous builds (projects, websites, papers, etc.)<span class="required" aria-label="required">*</span></label>
-                <textarea class="form-input form-textarea" id="builds" name="builds" required rows="3" placeholder="Add links and short details for your previous work"></textarea>
+                <textarea class="form-input form-textarea" id="builds" name="builds" required rows="7" placeholder="Add links and short details for your previous work"></textarea>
                 <span class="form-error" id="builds-error" role="alert" aria-live="polite"></span>
               </div>
 
