@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Maien Hamed — Partner · Sprints</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #14120f;
+      --ink:       #ece8de;
+      --ink-soft:  #bcb6a6;
+      --muted:     #8a8576;
+      --muted-soft:#5e5a4f;
+      --line:      rgba(236,232,222,0.12);
+      --accent:    #ff7043;
+      --mono:      "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── page wrapper ── */
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 56px 56px 96px;
+    }
+
+    /* ── breadcrumb ── */
+    .breadcrumb {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 80px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .breadcrumb .dot { color: var(--accent); margin-right: 10px; }
+    .breadcrumb a:hover { color: var(--ink); }
+    .breadcrumb .sep { color: var(--muted-soft); padding: 0 10px; }
+    .breadcrumb .back-btn {
+      margin-left: auto;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 5px 10px;
+      letter-spacing: .1em;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .breadcrumb .back-btn:hover { color: var(--ink); }
+
+    /* ── profile header ── */
+    header.profile {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 56px;
+      align-items: start;
+      margin-bottom: 96px;
+    }
+
+    h1.name {
+      font-weight: 500;
+      font-size: 40px;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin: 0 0 10px;
+    }
+    .role {
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .bio {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      margin: 0 0 28px;
+      max-width: 52ch;
+    }
+    .bio a {
+      color: var(--ink);
+      border-bottom: 1px solid var(--muted-soft);
+      padding-bottom: 1px;
+    }
+    .bio a:hover { color: var(--accent); border-color: var(--accent); }
+
+    .links {
+      display: flex;
+      gap: 24px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .links a {
+      border-bottom: 1px solid var(--muted-soft);
+      padding-bottom: 1px;
+    }
+    .links a:hover { color: var(--accent); border-color: var(--accent); }
+    .links .label { color: var(--muted); margin-right: 8px; }
+
+    /* ── portrait ── */
+    .portrait {
+      width: 260px;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: #d9d6d0;
+    }
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 78% center;
+      display: block;
+    }
+
+    /* ── sections ── */
+    section.block {
+      padding: 36px 0;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+    section.block:last-of-type { border-bottom: 1px solid var(--line); }
+
+    .section-head {
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-top: 4px;
+    }
+
+    /* list */
+    ul.list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    ul.list li {
+      font-size: 15px;
+      line-height: 1.45;
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 24px;
+      align-items: baseline;
+    }
+    ul.list .meta {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+    ul.list a.what {
+      font-size: 15px;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 120ms, border-color 120ms;
+    }
+    ul.list a.what:hover { color: var(--accent); border-color: var(--accent); }
+    ul.list .what .sub {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+
+    /* empty state */
+    .na { font-size: 14px; color: var(--muted); letter-spacing: .02em; }
+    .na .accent { color: var(--accent); }
+
+    /* responsive */
+    @media (max-width: 720px) {
+      .page { padding: 32px 24px 72px; }
+      header.profile { grid-template-columns: 1fr; }
+      .portrait { width: 100%; aspect-ratio: 3 / 2; }
+      .portrait img { object-position: center 20%; }
+      section.block { grid-template-columns: 1fr; gap: 16px; }
+      .breadcrumb { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<main class="page">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span class="dot">●</span>
+    <a href="index.html">sprints</a>
+    <span class="sep">/</span>
+    <span>partners</span>
+    <span class="sep">/</span>
+    <span>maien&#8209;hamed</span>
+    <a href="index.html" class="back-btn">← Back</a>
+  </div>
+
+  <!-- Profile header -->
+  <header class="profile">
+    <div>
+      <h1 class="name">Maien Hamed</h1>
+      <div class="role">Computational scientist · Spatial AI</div>
+      <p class="bio">I'm a computational scientist and ML engineer working at the intersection of physics, machine learning, robotics, and software systems. I did a PhD in computational mechanics focused on nonlinear multi&#8209;physics simulation, and have spent ~17 years building simulation systems, ML infrastructure, perception systems, and engineering software across academia, industrial R&amp;D, startups, and big tech.</p>
+      <div class="links">
+        <span><span class="label">Space</span><a href="problem.html">Spatial AI</a></span>
+      </div>
+    </div>
+    <div class="portrait">
+      <img src="maien-hamed.jpg" alt="Portrait of Maien Hamed" />
+    </div>
+  </header>
+
+  <!-- Current sprints -->
+  <section class="block">
+    <div class="section-head">Current sprints</div>
+    <ul class="list">
+      <li>
+        <span class="meta">cohort_01</span>
+        <a class="what" href="problem.html">Spatial AI<span class="sub">Open · dates TBD · 2026 · remote&#8209;first, NA</span></a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Previous sprints -->
+  <section class="block">
+    <div class="section-head">Previous sprints</div>
+    <div class="na"><span class="accent">—</span> &nbsp;N/A · cohort_01 is the inaugural run.</div>
+  </section>
+
+  <!-- Companies -->
+  <section class="block">
+    <div class="section-head">Companies</div>
+    <div class="na"><span class="accent">—</span> &nbsp;N/A · no companies have spun out yet.</div>
+  </section>
+
+  <!-- Recent posts -->
+  <section class="block">
+    <div class="section-head">Recent posts</div>
+    <div class="na"><span class="accent">—</span> &nbsp;Nothing yet.</div>
+  </section>
+
+</main>
+
+</body>
+</html>

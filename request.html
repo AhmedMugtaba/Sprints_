@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Request to join — Sprints</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Request an invite to a Sprints cohort." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: #0c0c0a; }
+    body {
+      background: #0c0c0a;
+      color: #e8e6df;
+      font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    :root {
+      --bg:       #0c0c0a;
+      --fg:       #e8e6df;
+      --muted:    #7a7770;
+      --line:     rgba(232,230,223,0.12);
+      --accent:   #ff5722;
+      --accent-fg:#0c0c0a;
+      --input:    rgba(232,230,223,0.04);
+      --card:     rgba(232,230,223,0.025);
+      --px:       32px;
+    }
+
+    .page-wrap { max-width: 1440px; margin: 0 auto; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px var(--px);
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .page-header .back-link {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: .1em;
+      padding: 5px 10px;
+      text-transform: uppercase;
+    }
+    .page-header .back-link:hover { border-color: rgba(232,230,223,0.3); color: var(--fg); }
+
+    .request-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) 1fr;
+      gap: 0;
+      min-height: calc(100vh - 100px);
+    }
+    .request-left {
+      padding: 48px 32px 64px;
+      border-right: 1px solid var(--line);
+    }
+    .request-right {
+      padding: 56px var(--px) 80px;
+    }
+    .form-centered { max-width: 560px; }
+    .page-title {
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .body-text { font-size: 14px; line-height: 1.7; color: var(--muted); }
+
+    /* Cohort summary panel */
+    .cohort-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .cohort-eyebrow .comment { color: var(--muted); margin-left: 12px; }
+    .cohort-problem {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .cohort-summary-card {
+      border: 1px solid var(--line);
+      padding: 20px 22px;
+      margin-bottom: 32px;
+    }
+    .cohort-summary-title {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      letter-spacing: -0.01em;
+    }
+    .toml-rows { display: flex; flex-direction: column; gap: 8px; }
+    .toml-row { display: grid; grid-template-columns: 90px 12px 1fr; gap: 6px; font-size: 12px; }
+    .toml-key { color: var(--muted); }
+    .toml-eq { color: var(--muted); }
+    .toml-val { color: var(--fg); }
+    .toml-val.status-open { color: var(--green); }
+
+    .partner-summary {
+      max-width: 560px;
+    }
+    .partner-summary-label {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .partner-summary-row {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+    .partner-summary-photo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+      flex-shrink: 0;
+    }
+    .partner-summary-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 3px;
+      letter-spacing: -0.01em;
+    }
+    .partner-summary-bio {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .form { display: flex; flex-direction: column; gap: 18px; }
+    .form-field { display: flex; flex-direction: column; }
+    .form-label {
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .form-label .required { color: var(--accent); margin-left: 4px; }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: var(--input);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+    .form-input:focus, .form-textarea:focus {
+      outline: 1px solid var(--accent);
+      outline-offset: -1px;
+    }
+    .form-textarea { resize: vertical; min-height: 160px; }
+    .form-input[type="date"] { color-scheme: dark; }
+    .submit-btn {
+      margin-top: 8px;
+      padding: 14px 18px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+    .submit-btn:hover:not(:disabled) { background: #e84e1f; }
+    .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .form-error { font-size: 11px; color: #ff5722; margin-top: 4px; letter-spacing: .04em; }
+
+    .success-panel {
+      padding: 32px 28px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .success-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .success-headline { font-size: 28px; line-height: 1.15; margin-bottom: 12px; color: var(--fg); }
+    .success-body { font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 18px var(--px);
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .request-layout { grid-template-columns: 1fr; }
+      .request-left { border-right: none; border-bottom: 1px solid var(--line); padding: 40px 24px 48px; }
+      .request-right { padding: 40px 24px 60px; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px 20px; }
+      .footer { flex-direction: column; gap: 8px; padding: 14px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="page-header">
+    <span>## 06 · Request to join <span style="color:var(--muted);margin-left:8px;">// $ submit_request</span></span>
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+
+  <div class="request-layout">
+
+    <!-- Left: Cohort + Partner details -->
+    <div class="request-left">
+      <p class="cohort-eyebrow"># 02 · Spatial_AI <span class="comment">// spatial_ai.toml</span></p>
+      <p class="cohort-problem">// Modern industry still operates on fragmented, non-persistent representations of the physical world. Can we build the spatial intelligence layer — where sensors, simulation, robotics, and AI converge into a single operational model of reality?</p>
+
+      <div class="partner-summary">
+        <div class="partner-summary-label"># PARTNER</div>
+        <div class="partner-summary-row">
+          <img class="partner-summary-photo" src="maien-hamed.jpg" alt="Maien Hamed" />
+          <div>
+            <div class="partner-summary-name">Maien Hamed</div>
+            <div class="partner-summary-bio">Ex-Meta Reality Labs Research. PhD in computational mechanics.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="request-right">
+    <div class="form-centered">
+      <div class="page-title">Invite request</div>
+      <p class="body-text" style="margin-bottom:32px;">Sprint is invite-only, share with us your previous work, projects, or what problems you are interested in working on, and what value you can bring to the room.</p>
+
+      <div class="cohort-summary-card" style="margin-bottom:36px;max-width:none;">
+        <div class="cohort-summary-title">[spatial_ai]</div>
+        <div class="toml-rows">
+          <div class="toml-row"><span class="toml-key">format</span><span class="toml-eq">=</span><span class="toml-val">"Remote, part-time"</span></div>
+          <div class="toml-row"><span class="toml-key">duration</span><span class="toml-eq">=</span><span class="toml-val">"2 weeks"</span></div>
+          <div class="toml-row"><span class="toml-key">group_size</span><span class="toml-eq">=</span><span class="toml-val">"8–12 people"</span></div>
+          <div class="toml-row"><span class="toml-key">partner</span><span class="toml-eq">=</span><span class="toml-val">"Maien Hamed"</span></div>
+          <div class="toml-row"><span class="toml-key">status</span><span class="toml-eq">=</span><span class="toml-val status-open">"open"</span></div>
+          <div class="toml-row"><span class="toml-key">dates</span><span class="toml-eq">=</span><span class="toml-val">"TBD"</span></div>
+        </div>
+      </div>
+
+      <div id="form-container">
+        <form class="form" id="apply-form" novalidate>
+          <div id="form-error-banner" role="alert" aria-live="polite" style="display:none;padding:12px 14px;border:1px solid var(--accent);color:var(--accent);font-size:13px;"></div>
+
+          <div class="form-field">
+            <label class="form-label" for="name">Name<span class="required" aria-label="required">*</span></label>
+            <input class="form-input" type="text" id="name" name="name" required placeholder="Your full name" autocomplete="name" />
+            <span class="form-error" id="name-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="email">Email<span class="required" aria-label="required">*</span></label>
+            <input class="form-input" type="email" id="email" name="email" required placeholder="you@domain.com" autocomplete="email" />
+            <span class="form-error" id="email-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="phone">Phone<span class="required" aria-label="required">*</span></label>
+            <input class="form-input" type="tel" id="phone" name="phone" required placeholder="+1 234 567 890" autocomplete="tel" />
+            <span class="form-error" id="phone-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="dob">Date of birth<span class="required" aria-label="required">*</span></label>
+            <input class="form-input" type="date" id="dob" name="dob" required placeholder="YYYY-MM-DD" />
+            <span class="form-error" id="dob-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="builds">Previous builds (projects, websites, papers, etc.)<span class="required" aria-label="required">*</span></label>
+            <textarea class="form-input form-textarea" id="builds" name="builds" required rows="7" placeholder="Add links and short details for your previous work"></textarea>
+            <span class="form-error" id="builds-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="github">GitHub profile</label>
+            <input class="form-input" type="url" id="github" name="github" placeholder="https://github.com/username" />
+            <span class="form-error" id="github-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="linkedin">LinkedIn profile</label>
+            <input class="form-input" type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username" />
+            <span class="form-error" id="linkedin-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="resume">Resume link</label>
+            <input class="form-input" type="url" id="resume" name="resume" placeholder="https://example.com/resume.pdf" />
+            <span class="form-error" id="resume-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div style="display:none;" aria-hidden="true">
+            <label for="website_url">Leave this empty</label>
+            <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <button type="submit" class="submit-btn" id="submit-btn">SUBMIT REQUEST →</button>
+        </form>
+      </div>
+    </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <span>© 2026 Seed to Fruit. Confidential. For review only.</span>
+    <span>seedtofruit.ca/sprints · main · v0.1.0</span>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    const form      = document.getElementById('apply-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const container = document.getElementById('form-container');
+    const banner    = document.getElementById('form-error-banner');
+
+    const requiredFields = ['name', 'email', 'phone', 'dob', 'builds'];
+
+    function clearError(id) { const el = document.getElementById(id + '-error'); if (el) el.textContent = ''; }
+    function setError(id, msg) { const el = document.getElementById(id + '-error'); if (el) el.textContent = msg; }
+
+    function validate() {
+      let valid = true;
+      requiredFields.forEach(function (id) {
+        clearError(id);
+        const el = document.getElementById(id);
+        if (!el.value.trim()) { setError(id, 'This field is required.'); valid = false; }
+      });
+
+      const emailEl = document.getElementById('email');
+      if (emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+        setError('email', 'Please enter a valid email address.');
+        valid = false;
+      }
+
+      ['github', 'linkedin', 'resume'].forEach(function (id) {
+        clearError(id);
+        const el = document.getElementById(id);
+        if (el.value.trim() && !/^https?:\/\/.+/.test(el.value.trim())) {
+          setError(id, 'Please enter a valid URL starting with https://');
+          valid = false;
+        }
+      });
+
+      return valid;
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      banner.style.display = 'none';
+
+      if (document.getElementById('website_url').value) return;
+      if (!validate()) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      const data = {
+        name:     document.getElementById('name').value.trim(),
+        email:    document.getElementById('email').value.trim(),
+        phone:    document.getElementById('phone').value.trim(),
+        dob:      document.getElementById('dob').value,
+        builds:   document.getElementById('builds').value.trim(),
+        github:   document.getElementById('github').value.trim(),
+        linkedin: document.getElementById('linkedin').value.trim(),
+        resume:   document.getElementById('resume').value.trim(),
+      };
+
+      const SUPABASE_URL = 'https://jmxazjsaxthmogglgxrz.supabase.co';
+      const SUPABASE_KEY = 'sb_publishable_ETL0y1Gawm9JCFgUmYFGIA_1ypH99Ct';
+
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/sprints_applications', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(err || 'Server error: ' + res.status);
+        }
+
+        container.innerHTML = `
+          <div class="success-panel" role="status">
+            <div class="success-eyebrow">Request received</div>
+            <div class="success-headline">Thanks. We'll be in touch.</div>
+            <p class="success-body">Sprints is invite-only. We read every request personally. If your background fits an upcoming cohort, you'll hear from us within two weeks.</p>
+          </div>
+        `;
+      } catch (err) {
+        banner.textContent = 'Something went wrong. Please check your connection and try again.';
+        banner.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'SUBMIT REQUEST →';
+      }
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>What is Spatial AI — Sprints</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #14120f;
+      --bg-rule:   #1c1a16;
+      --ink:       #ece8de;
+      --ink-soft:  #bcb6a6;
+      --muted:     #8a8576;
+      --muted-soft:#5e5a4f;
+      --line:      rgba(236,232,222,0.18);
+      --line-soft: rgba(236,232,222,0.10);
+      --accent:    #ff7043;
+      --mono:      "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── top utility bar ── */
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 56px;
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .top .left { display: flex; gap: 28px; align-items: center; }
+    .top .right { display: flex; gap: 28px; align-items: center; }
+    .top a { color: var(--muted); }
+    .top a:hover { color: var(--ink); }
+    .top .dot { color: var(--accent); }
+    .top .join-btn {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 6px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+    .top .join-btn:hover { filter: brightness(1.05); color: var(--bg); }
+
+    /* ── title block ── */
+    .title-block {
+      padding: 120px 56px 80px;
+      display: flex;
+      justify-content: center;
+    }
+    .title-inner {
+      width: 100%;
+      max-width: 1280px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+    .title-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,112,67,0.10);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 28px;
+      width: fit-content;
+    }
+    .partner-credit {
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .partner-credit img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 15%;
+      flex-shrink: 0;
+      filter: grayscale(100%);
+    }
+    .partner-credit-text .credit-label {
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .partner-credit-text .credit-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 3px;
+      letter-spacing: -0.01em;
+    }
+    .partner-credit-text .credit-bio {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .title-block h1 {
+      margin: 0;
+      font-weight: 500;
+      font-size: 88px;
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+    }
+    .title-block h1 .accent { color: var(--accent); }
+    .title-block h1 .caret {
+      display: inline-block;
+      width: 0.5em;
+      height: 0.85em;
+      background: var(--accent);
+      vertical-align: -0.08em;
+      margin-left: 0.08em;
+      animation: blink 1.1s steps(2, end) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── two-column layout ── */
+    .page {
+      display: flex;
+      justify-content: center;
+      padding: 0 56px 120px;
+    }
+    .page-inner {
+      width: 100%;
+      max-width: 1280px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    /* ── sticky TOC ── */
+    nav.toc {
+      position: sticky;
+      top: 40px;
+      align-self: start;
+      padding-top: 8px;
+    }
+    nav.toc .toc-eyebrow {
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted-soft);
+      margin-bottom: 22px;
+    }
+    nav.toc ol {
+      list-style: none;
+      counter-reset: toc;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    nav.toc li {
+      counter-increment: toc;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 8px;
+      align-items: baseline;
+    }
+    nav.toc li::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted-soft);
+      letter-spacing: .12em;
+    }
+    nav.toc a {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--ink);
+      transition: color 120ms ease;
+    }
+    nav.toc a:hover { color: var(--accent); }
+    nav.toc a.current { color: var(--accent); }
+    nav.toc li:has(a.current)::before { color: var(--accent); }
+
+    /* ── article body ── */
+    article { max-width: 720px; }
+
+    article .lede {
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0 0 80px;
+    }
+    article .lede .prompt {
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    article h2 {
+      font-weight: 600;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: 0 0 28px;
+      scroll-margin-top: 60px;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+    article h2::before {
+      content: attr(data-num);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: .12em;
+      padding-top: 4px;
+    }
+
+    article p {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      margin: 0 0 1.2em;
+    }
+    article p.small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    article section { margin-bottom: 96px; scroll-margin-top: 60px; }
+    article section:last-child { margin-bottom: 0; }
+
+    /* bare list — accent left border */
+    article ul.bare {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.6em;
+    }
+    article ul.bare li {
+      padding: 6px 0 6px 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 8px;
+    }
+    article ul.bare li::before {
+      content: "—";
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* numbered shifts list */
+    article ul.shifts {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 1.6em;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    article ul.shifts li {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 16px;
+      align-items: baseline;
+      padding: 14px 0;
+      border-top: 1px solid var(--line-soft);
+    }
+    article ul.shifts li:last-child { border-bottom: 1px solid var(--line-soft); }
+    article ul.shifts .num {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: .14em;
+      padding-top: 4px;
+    }
+    article ul.shifts strong {
+      font-weight: 600;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+      letter-spacing: -0.005em;
+    }
+    article ul.shifts span.body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+
+    /* pull quote */
+    blockquote.pull {
+      margin: 56px 0;
+      padding: 28px 0 28px 32px;
+      border-left: 3px solid var(--accent);
+    }
+    blockquote.pull p {
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 1.45;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin: 0;
+    }
+    blockquote.pull .who {
+      display: block;
+      margin-top: 16px;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* end CTA */
+    .end-cta {
+      margin-top: 24px;
+      padding: 36px 0 0;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 28px;
+      align-items: center;
+    }
+    .end-cta .label {
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .end-cta a.primary {
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: .06em;
+      color: #0c0c0a;
+      background: var(--accent);
+      padding: 14px 22px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .end-cta a.primary .dollar { opacity: 0.7; }
+    .end-cta a.primary:hover { filter: brightness(1.05); }
+    .end-cta a.ghost {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 2px;
+    }
+    .end-cta a.ghost:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* footer */
+    footer.foot {
+      padding: 20px 56px 28px;
+      border-top: 1px solid var(--line-soft);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      .top { padding: 14px 24px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      .title-block { padding: 60px 24px 48px; }
+      .title-inner { grid-template-columns: 1fr; gap: 24px; }
+      .partner-credit {
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .partner-credit img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 15%;
+      flex-shrink: 0;
+      filter: grayscale(100%);
+    }
+    .partner-credit-text .credit-label {
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .partner-credit-text .credit-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 3px;
+      letter-spacing: -0.01em;
+    }
+    .partner-credit-text .credit-bio {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .title-block h1 { font-size: 52px; }
+      .page { padding: 0 24px 80px; }
+      .page-inner { grid-template-columns: 1fr; gap: 48px; }
+      nav.toc { position: static; }
+      footer.foot { padding: 16px 24px; flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <div class="top">
+    <div class="left">
+      <a href="index.html" style="color:var(--muted);border:1px solid rgba(236,232,222,0.18);padding:5px 10px;letter-spacing:.1em;">← Back</a>
+    </div>
+    <div class="right">
+      <a href="request.html" class="join-btn">Request to join →</a>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <header class="title-block">
+    <div class="title-inner">
+      <div>
+        <div class="title-tag"><span>#</span>&nbsp;spatial_ai</div>
+        <div class="partner-credit">
+          <img src="maien-hamed.jpg" alt="Maien Hamed" />
+          <div class="partner-credit-text">
+            <div class="credit-label">Partner</div>
+            <div class="credit-name">By Maien Hamed</div>
+            <div class="credit-bio">Ex-Meta Reality Labs Research. PhD in computational mechanics.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="title-tag" style="visibility:hidden;pointer-events:none;">placeholder</div>
+        <h1>What is<br/>Spatial&nbsp;<span class="accent">AI</span><span class="caret"></span></h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="page">
+    <div class="page-inner">
+
+      <!-- Sticky TOC -->
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-eyebrow">// on this page</div>
+        <ol>
+          <li><a href="#flat-world" class="current">What Spatial AI is</a></li>
+          <li><a href="#bottleneck">The core problem</a></li>
+          <li><a href="#unlock">Why this matters now</a></li>
+        </ol>
+      </nav>
+
+      <!-- Article -->
+      <article>
+
+        <p class="lede"><span class="prompt">&gt;</span>Spatial AI sits at the convergence of several large transitions simultaneously: robotics and automation, AI&#8209;native engineering workflows, digital twins and simulation, embodied AI, geospatial intelligence, and industrial modernization. This is not a single market. It is an enabling layer across multiple trillion&#8209;dollar industries.</p>
+
+        <section id="flat-world">
+          <h2 data-num="01">What Spatial AI Actually Is</h2>
+          <p>Spatial AI is the ability for machines and software systems to:</p>
+          <ul class="bare">
+            <li>perceive 3D environments,</li>
+            <li>localize themselves within them,</li>
+            <li>build persistent world models,</li>
+            <li>reason about geometry and motion,</li>
+            <li>predict physical interactions,</li>
+            <li>and act within physical space.</li>
+          </ul>
+          <p>It combines: computer vision, LiDAR and sensor fusion, SLAM and mapping, simulation, robotics, geometric ML, physics&#8209;based modeling, and increasingly foundation&#8209;model&#8209;style reasoning.</p>
+          <p>The key shift is that AI is moving from text and pixels, to embodied understanding of the physical world. This transition is analogous to the shift from web software, to software that understands and manipulates reality itself.</p>
+        </section>
+
+        <section id="bottleneck">
+          <h2 data-num="02">The Core Problem</h2>
+          <p>Modern industry still operates with fragmented, incomplete, and mostly non&#8209;persistent representations of the physical world. Physical environments are poorly digitized, manually inspected, inconsistently modeled, difficult to monitor continuously, and disconnected from operational decision&#8209;making.</p>
+          <p>Even organizations with sophisticated engineering teams often have:</p>
+          <ul class="bare">
+            <li>CAD disconnected from reality,</li>
+            <li>simulations disconnected from operations,</li>
+            <li>robotics disconnected from environmental understanding,</li>
+            <li>and AI disconnected from physical constraints.</li>
+          </ul>
+          <p>This creates major inefficiencies: expensive site visits, manual surveying, downtime, safety risks, slow design iteration, reactive maintenance, poor operational visibility, and underutilized industrial data.</p>
+        </section>
+
+        <section id="unlock">
+          <h2 data-num="03">Why This Matters Now</h2>
+          <p>Several enabling technologies have recently crossed practical thresholds simultaneously:</p>
+          <ul class="shifts">
+            <li>
+              <span class="num">01</span>
+              <div>
+                <strong>Sensors became cheap and good</strong>
+                <span class="body">LiDAR, RGB&#8209;D cameras, drones, edge compute, and inertial systems are now accessible.</span>
+              </div>
+            </li>
+            <li>
+              <span class="num">02</span>
+              <div>
+                <strong>AI models became geometry&#8209;aware</strong>
+                <span class="body">NeRFs, Gaussian splatting, foundation vision models, 3D scene representations, and multimodal transformers dramatically improved scene understanding.</span>
+              </div>
+            </li>
+            <li>
+              <span class="num">03</span>
+              <div>
+                <strong>Robotics became commercially viable</strong>
+                <span class="body">Warehouses, mining, construction, agriculture, logistics, and inspection are automating.</span>
+              </div>
+            </li>
+            <li>
+              <span class="num">04</span>
+              <div>
+                <strong>Simulation and AI are converging</strong>
+                <span class="body">Industrial simulation is increasingly being accelerated or approximated using ML surrogates and learned physical models.</span>
+              </div>
+            </li>
+            <li>
+              <span class="num">05</span>
+              <div>
+                <strong>Digital twin demand exploded</strong>
+                <span class="body">Organizations want continuously updated operational models rather than static CAD files or disconnected dashboards.</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="end-cta" id="apply">
+            <a class="primary" href="request.html"><span class="dollar">$</span> request_to_join →</a>
+            <a class="ghost" href="partner.html">Meet the partner</a>
+          </div>
+        </section>
+
+      </article>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <span>seed&#8209;to&#8209;fruit / sprints / spaces / spatial_ai</span>
+    <span>v0.4.0 · problem page · theme:dark</span>
+  </footer>
+
+  <script>
+    // Highlight active TOC item on scroll
+    const sections = document.querySelectorAll('article section[id]');
+    const links = document.querySelectorAll('nav.toc a');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('current'));
+          const active = document.querySelector(`nav.toc a[href="#${e.target.id}"]`);
+          if (active) active.classList.add('current');
+        }
+      });
+    }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>
