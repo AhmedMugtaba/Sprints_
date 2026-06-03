@@ -304,15 +304,9 @@
           </div>
 
           <div class="form-field">
-            <label class="form-label" for="dob">Date of birth<span class="required" aria-label="required">*</span></label>
-            <input class="form-input" type="date" id="dob" name="dob" required placeholder="YYYY-MM-DD" />
-            <span class="form-error" id="dob-error" role="alert" aria-live="polite"></span>
-          </div>
-
-          <div class="form-field">
-            <label class="form-label" for="builds">Previous builds (projects, websites, papers, etc.)<span class="required" aria-label="required">*</span></label>
-            <textarea class="form-input form-textarea" id="builds" name="builds" required rows="7" placeholder="Add links and short details for your previous work"></textarea>
-            <span class="form-error" id="builds-error" role="alert" aria-live="polite"></span>
+            <label class="form-label" for="location">Location<span class="required" aria-label="required">*</span></label>
+            <input class="form-input" type="text" id="location" name="location" required placeholder="City, Country" autocomplete="address-level2" />
+            <span class="form-error" id="location-error" role="alert" aria-live="polite"></span>
           </div>
 
           <div class="form-field">
@@ -328,9 +322,21 @@
           </div>
 
           <div class="form-field">
-            <label class="form-label" for="resume">Resume link</label>
-            <input class="form-input" type="url" id="resume" name="resume" placeholder="https://example.com/resume.pdf" />
-            <span class="form-error" id="resume-error" role="alert" aria-live="polite"></span>
+            <label class="form-label" for="education">Education (schools, degrees including field of study, and years of graduation)<span class="required" aria-label="required">*</span></label>
+            <textarea class="form-input form-textarea" id="education" name="education" required rows="5" placeholder="Use a separate line for each school. e.g.&#10;MIT — B.S. Computer Science, 2018&#10;Stanford — M.S. AI, 2020"></textarea>
+            <span class="form-error" id="education-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="employment">Employment (employers, position / titles, and dates)<span class="required" aria-label="required">*</span></label>
+            <textarea class="form-input form-textarea" id="employment" name="employment" required rows="5" placeholder="Use a separate line for each job, most recent first. e.g.&#10;Anthropic — Research Engineer, 2023–present&#10;Google — Software Engineer, 2020–2023"></textarea>
+            <span class="form-error" id="employment-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="builds">Previous builds (projects, websites, papers, etc.)<span class="required" aria-label="required">*</span></label>
+            <textarea class="form-input form-textarea" id="builds" name="builds" required rows="7" placeholder="Add links and short details for your previous work"></textarea>
+            <span class="form-error" id="builds-error" role="alert" aria-live="polite"></span>
           </div>
 
           <div style="display:none;" aria-hidden="true">
@@ -360,7 +366,7 @@
     const container = document.getElementById('form-container');
     const banner    = document.getElementById('form-error-banner');
 
-    const requiredFields = ['name', 'email', 'phone', 'dob', 'builds'];
+    const requiredFields = ['name', 'email', 'phone', 'location', 'education', 'employment', 'builds'];
 
     function clearError(id) { const el = document.getElementById(id + '-error'); if (el) el.textContent = ''; }
     function setError(id, msg) { const el = document.getElementById(id + '-error'); if (el) el.textContent = msg; }
@@ -379,7 +385,7 @@
         valid = false;
       }
 
-      ['github', 'linkedin', 'resume'].forEach(function (id) {
+      ['github', 'linkedin'].forEach(function (id) {
         clearError(id);
         const el = document.getElementById(id);
         if (el.value.trim() && !/^https?:\/\/.+/.test(el.value.trim())) {
@@ -402,14 +408,15 @@
       submitBtn.textContent = 'Submitting...';
 
       const data = {
-        name:     document.getElementById('name').value.trim(),
-        email:    document.getElementById('email').value.trim(),
-        phone:    document.getElementById('phone').value.trim(),
-        dob:      document.getElementById('dob').value,
-        builds:   document.getElementById('builds').value.trim(),
-        github:   document.getElementById('github').value.trim(),
-        linkedin: document.getElementById('linkedin').value.trim(),
-        resume:   document.getElementById('resume').value.trim(),
+        name:       document.getElementById('name').value.trim(),
+        email:      document.getElementById('email').value.trim(),
+        phone:      document.getElementById('phone').value.trim(),
+        location:   document.getElementById('location').value.trim(),
+        github:     document.getElementById('github').value.trim(),
+        linkedin:   document.getElementById('linkedin').value.trim(),
+        education:  document.getElementById('education').value.trim(),
+        employment: document.getElementById('employment').value.trim(),
+        builds:     document.getElementById('builds').value.trim(),
       };
 
       const SUPABASE_URL = 'https://jmxazjsaxthmogglgxrz.supabase.co';
