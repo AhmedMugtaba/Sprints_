@@ -2,1041 +2,1212 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Sprints — Phase 01 · Seed to Fruit</title>
+  <title>Sprints · Seed to Fruit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Sprints brings together 8–12 people who have spent years inside a problem for two weeks of intensive remote work. By the end, a founding team emerges." />
+  <meta name="description" content="Sprints brings together 8–12 people who have spent years inside a problem. Two weeks of intensive work, and everyone in the room owns a piece of what gets built." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & base ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; background: #0c0c0a; }
-    body {
-      background: #0c0c0a;
-      color: #e8e6df;
-      font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-      font-size: 14px;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; text-decoration: none; }
-    button { font-family: inherit; cursor: pointer; }
-
-    /* ── Max-width wrapper ── */
-    .page-wrap {
-      max-width: 1440px;
-      margin: 0 auto;
-    }
-
-    /* ── Sprint window visual ── */
-    .sprint-window-section { display: flex; justify-content: center; }
-    .sprint-window {
-      width: 100%;
-      max-width: 600px;
-      border: 1px solid var(--line);
-      background: rgba(232,230,223,0.03);
-    }
-    .sprint-window__header {
-      display: flex;
-      align-items: center;
-      padding: 12px 18px;
-      border-bottom: 1px solid var(--line);
-    }
-    .sprint-window__dots { display: flex; gap: 7px; margin-right: auto; }
-    .sprint-window__dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 0;
-    }
-    .sprint-window__header-label {
-      font-size: 10px;
-      letter-spacing: .12em;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .sprint-window__body {
-      padding: 48px 40px 36px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      text-align: center;
-    }
-    .sprint-window__logo {
-      font-size: 26px;
-      font-weight: 500;
-      letter-spacing: -0.03em;
-      color: var(--fg);
-    }
-    .sprint-window__logo .cursor { color: var(--accent); }
-    .sprint-window__headline {
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing: .04em;
-    }
-    .sprint-window__problem {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-      border: 1px solid var(--line);
-      background: rgba(232,230,223,0.04);
-      font-size: 12px;
-      color: var(--fg);
-      letter-spacing: .04em;
-      cursor: default;
-    }
-    .sprint-window__problem-icon { color: var(--accent); font-size: 10px; }
-    .sprint-window__problem-arrow { color: var(--muted); }
-    .sprint-window__prompt-wrap {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: rgba(12,12,10,0.6);
-      cursor: text;
-    }
-    .sprint-window__prompt-body {
-      padding: 18px 20px 10px;
-      font-size: 13px;
-      color: var(--muted);
-      text-align: left;
-      display: flex;
-      gap: 8px;
-    }
-    .sprint-window__prompt-body .prefix { color: var(--accent); flex-shrink: 0; }
-    .sprint-window__prompt-cursor {
-      display: inline-block;
-      width: 8px;
-      height: 14px;
-      background: var(--accent);
-      opacity: .8;
-      animation: blink 1.1s step-end infinite;
-      vertical-align: middle;
-      margin-left: 2px;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-    .sprint-window__prompt-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 14px 14px;
-    }
-    .sprint-window__prompt-add {
-      font-size: 16px;
-      color: var(--muted);
-      line-height: 1;
-    }
-    .sprint-window__submit {
-      background: var(--accent);
-      color: var(--accent-fg);
-      border: none;
-      width: 34px;
-      height: 34px;
-      font-size: 15px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: inherit;
-      font-weight: 600;
-      border-radius: 0;
-    }
-    .sprint-window__submit:hover { background: #e84e1f; }
-
-    /* ── Tokens ── */
+    /* ─────────────────────────────────────────────────────────────
+       Design tokens — dark theme (committed).
+       ───────────────────────────────────────────────────────────── */
     :root {
-      --bg:       #0c0c0a;
-      --fg:       #e8e6df;
-      --muted:    #7a7770;
-      --line:     rgba(232,230,223,0.12);
-      --accent:   #ff5722;
-      --accent-fg:#0c0c0a;
-      --card:     rgba(232,230,223,0.025);
-      --input:    rgba(232,230,223,0.04);
-      --green:    #7fb069;
-      --amber:    #e8b65a;
-      --json-key: #a8c4a0;
-      --px:       32px;
+      --bg: #14120f;
+      --panel: #1c1a16;
+      --panel-deep: #100e0b;
+      --ink: #ece8de;
+      --ink-soft: #bcb6a6;
+      --muted: #8a8576;
+      --muted-soft: #5e5a4f;
+      --line: rgba(236,232,222,0.14);
+      --line-soft: rgba(236,232,222,0.08);
+      --img-base: #211d17;
+      --img-stripe: rgba(236,232,222,0.05);
+      --green: #9bbf6b;
+      --soft-fill: rgba(236,232,222,0.04);
+
+      /* One accent ships: orange. oklch so hues stay perceptually matched. */
+      --accent: oklch(0.72 0.17 45);
+      --accent-tint: rgba(232,99,42,.07);
+
+      --overlay-ink: #f4f0e6;
+      --overlay-soft: rgba(244,240,230,0.72);
+
+      --display: "Archivo", "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
     }
 
-    /* ── Layout helpers ── */
-    .section {
-      padding: 64px var(--px);
-      border-bottom: 1px solid var(--line);
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--bg); }
+    body { color: var(--ink); font-family: var(--display); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    h1, h2, h3, p { margin: 0; }
+
+    /* Panels are navigated, not scrubbed — hide scrollbars. */
+    .sb-scroll::-webkit-scrollbar { width: 0; height: 0; }
+    .sb-scroll { scrollbar-width: none; }
+
+    /* ── Motion ── */
+    @keyframes sbBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+    .sb-bounce { animation: sbBounce 1.6s ease-in-out infinite; display: inline-block; }
+    @keyframes sbFeedIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .sb-feedin { animation: sbFeedIn 420ms ease both; }
+    @keyframes sbPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+    .sb-pulse { animation: sbPulse 1.4s ease-in-out infinite; }
+
+    /* ── Hero key:value jump nav ── */
+    .sb-hint { appearance: none; border: none; background: transparent; cursor: pointer; font-family: var(--mono); }
+    .sb-key {
+      appearance: none; border: none; background: transparent; cursor: pointer;
+      font-family: inherit; font-size: inherit; text-align: right; padding: 1px 0;
+      transition: color 150ms ease; display: block; text-decoration: none; margin-top: 6px;
     }
-    .section--hero { padding: 80px var(--px); position: relative; border-bottom: 1px solid var(--line); }
+    .sb-key .sb-kl { color: var(--muted); transition: color 150ms ease; }
+    .sb-key .sb-ks { color: var(--muted-soft); }
+    .sb-key .sb-kv { color: var(--ink-soft); font-variant-numeric: tabular-nums; transition: color 150ms ease; }
+    .sb-key:hover .sb-kl, .sb-key:hover .sb-kv { color: var(--accent); }
+
+    /* ─────────────────────────────────────────────────────────────
+       Type roles. Mono is for machine language: eyebrows, cohort
+       codes, dates, status, key/value metadata, chips, buttons —
+       plus the hero lede, which is deliberately terminal-voiced.
+       The display face carries every headline and every paragraph.
+       ───────────────────────────────────────────────────────────── */
     .eyebrow {
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 24px;
+      font-family: var(--mono); font-weight: 500; font-size: clamp(11px, 1vw, 13px);
+      letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
     }
-    .eyebrow .comment { color: var(--muted); margin-left: 12px; }
-    .h2 {
-      font-size: 38px;
-      font-weight: 500;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
+    .label {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--muted-soft);
     }
-    .body-text { font-size: 14px; line-height: 1.7; color: var(--muted); }
+    .head { display: flex; gap: 2.4em; flex-wrap: wrap; }
+    .head--center { justify-content: center; }
+    .prose { font-family: var(--display); font-weight: 400; line-height: 1.55; text-wrap: pretty; color: var(--muted); }
 
-    /* ── Status bar ── */
-    .statusbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px var(--px);
-      border-bottom: 1px solid var(--line);
-      font-size: 11px;
-      letter-spacing: .06em;
-      color: var(--muted);
-    }
-    .statusbar__left, .statusbar__right { display: flex; gap: 24px; align-items: center; }
-    .statusbar .dot { color: var(--accent); }
-    .statusbar .open { color: var(--green); }
+    /* ── Deck & panels ──
+       No `scroll-behavior: smooth` here: it would animate every direct
+       scrollTop write and fight the scripted jumps. Smoothness is opted
+       into per-call in goTo(). `scroll-snap-stop: always` keeps a wheel
+       flick to exactly one panel; goTo() lifts snapping while it runs,
+       because that rule otherwise halts a multi-panel jump partway. */
+    .deck { height: 100vh; height: 100dvh; overflow-y: scroll; scroll-snap-type: y mandatory; overscroll-behavior: contain; }
+    .deck.is-jumping { scroll-snap-type: none; }
+    .panel { height: 100vh; height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; background: var(--bg); position: relative; }
 
-    /* ── Tick strip ── */
-    .tickstrip {
-      display: flex;
-      align-items: flex-end;
-      height: 14px;
-      padding: 0 var(--px);
-      border-bottom: 1px solid var(--line);
+    /* ── Top bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 34px; pointer-events: none;
+      font-family: var(--mono); font-size: 11.5px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--ink);
     }
-    .tick {
-      flex: 1;
-      border-right: 0.5px solid var(--line);
-    }
-    .tick--major { height: 14px; }
-    .tick--mid   { height: 8px; }
-    .tick--minor { height: 4px; }
+    .topbar > div { display: flex; gap: 12px; align-items: center; text-shadow: 0 1px 8px rgba(0,0,0,.35); }
+    .topbar .brand { font-weight: 500; }
+    .topbar .sect { color: var(--muted); }
+    .topbar .count { color: var(--accent); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .topbar .count-of { color: var(--muted); }
 
-    /* ── Hero ── */
-    .hero-eyebrow {
-      font-size: 11px;
-      letter-spacing: .18em;
-      color: var(--accent);
-      margin-bottom: 32px;
-      text-transform: uppercase;
+    /* ── Dot nav ── */
+    .dotnav {
+      position: fixed; right: 26px; top: 50%; transform: translateY(-50%);
+      z-index: 40; display: flex; flex-direction: column; gap: 13px; align-items: center;
     }
-    .hero-h1 {
-      font-size: 78px;
-      font-weight: 500;
-      line-height: 1.0;
-      letter-spacing: -0.04em;
-      margin-bottom: 0;
-      color: var(--fg);
+    .dotnav button { appearance: none; border: none; background: transparent; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+    .dotnav span { width: 7px; height: 7px; border-radius: 4px; display: block; background: var(--muted); opacity: .32; transition: all 220ms ease; }
+    .dotnav button[data-sprint] span { opacity: .5; }
+    .dotnav button[aria-current="true"] span { width: 22px; background: var(--accent); opacity: 1; }
+
+    /* ── Scroll hint ── */
+    .hint {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 40;
+      font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+      display: flex; align-items: center; gap: 9px; padding: 4px 8px;
+      text-shadow: 0 1px 8px rgba(0,0,0,.35);
     }
-    .hero-h1 .cursor { color: var(--accent); }
-    .hero-sub {
-      font-size: 32px;
-      font-weight: 400;
-      line-height: 1.3;
-      letter-spacing: 0;
-      color: var(--muted);
-      margin-top: 20px;
-      max-width: 800px;
+    .hint[hidden] { display: none; }
+    .hint .arrow { color: var(--accent); }
+
+    /* ── 00 · Hero ── */
+    .hero {
+      height: 100%; display: flex; flex-direction: column; justify-content: center;
+      max-width: 2100px; margin: 0 auto; position: relative;
+      padding: clamp(40px,5.5vh,96px) clamp(30px,5vw,110px);
     }
-    .hero-sub .prefix { color: var(--accent); }
-    /* Thesis section */
-    .thesis-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 480px; align-items: stretch; }
-    .thesis-content { padding: 72px 56px; display: flex; flex-direction: column; justify-content: center; }
-    .thesis-photo-col { overflow: hidden; position: relative; }
-    .thesis-photo-strip { display: flex; width: 100%; height: 100%; overflow: hidden; position: relative; }
-    .thesis-photo-track { display: flex; align-items: stretch; gap: 16px; flex-shrink: 0; height: 100%; animation: thesis-scroll 28s linear infinite; padding: 16px; box-sizing: border-box; }
-    .thesis-photo-track img { height: 100%; width: auto; min-width: 220px; max-width: 320px; object-fit: cover; display: block; flex-shrink: 0; border-radius: 12px; }
-    @keyframes thesis-scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .hero__eyebrow { margin-bottom: clamp(26px,4.5vh,50px); }
+    .hero__wordmark { display: flex; align-items: flex-end; gap: .06em; line-height: .8; }
+    .hero__wordmark h1 {
+      font-family: var(--display); font-weight: 800;
+      font-size: clamp(72px,14.5vw,224px); letter-spacing: -0.04em; color: var(--ink); line-height: .8;
     }
-    .thesis-photo-strip:hover .thesis-photo-track { animation-play-state: paused; }
+    .hero__mark {
+      width: clamp(30px,5.4vw,86px); height: clamp(12px,2.1vw,32px);
+      background: var(--accent); margin-bottom: clamp(6px,1.2vw,20px); display: inline-block;
+    }
+    .hero__lede {
+      margin: clamp(26px,3.6vh,50px) 0 0;
+      font-family: var(--mono); font-weight: 400;
+      font-size: clamp(19px,2.5vw,40px); line-height: 1.16; letter-spacing: -0.01em;
+      color: var(--muted); max-width: 26ch;
+    }
+    .hero__lede .caret { color: var(--accent); margin-right: .35em; }
+    .hero__counts {
+      margin-top: clamp(34px,5vh,70px); display: flex; gap: clamp(16px,2vw,32px);
+      flex-wrap: wrap; align-items: center;
+      font-family: var(--mono); font-size: clamp(12px,1vw,15px); letter-spacing: .05em; color: var(--muted);
+    }
+    .hero__counts b { color: var(--accent); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .hero__counts .sep { color: var(--muted-soft); }
+    .hero__jump {
+      position: absolute; top: clamp(56px,9vh,104px); right: clamp(64px,7vw,120px);
+      text-align: right; display: flex; flex-direction: column; gap: 5px;
+      font-family: var(--mono); font-size: clamp(11px,.95vw,14px); letter-spacing: .02em;
+    }
+
+    /* ── 01 · Thesis ── */
     .thesis {
-      max-width: 800px;
-      padding: 24px 28px;
-      background: var(--card);
-      border-left: 2px solid var(--accent);
-      margin: 40px 0;
+      height: 100%; display: flex; flex-direction: column; justify-content: center;
+      align-items: center; text-align: center; padding: clamp(40px,6vw,120px);
     }
-    .thesis__label {
-      font-size: 11px;
-      letter-spacing: .16em;
-      color: var(--muted);
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-    .thesis__body { font-size: 16px; line-height: 1.7; color: var(--fg); }
-    .cta-row { display: flex; align-items: center; gap: 20px; margin-top: 48px; }
-    .cta-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 22px;
-      background: var(--accent);
-      color: var(--accent-fg);
-      font-size: 12px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      font-weight: 600;
-      border: none;
-      text-decoration: none;
-    }
-    .cta-btn:hover { background: #e84e1f; }
-    .cta-btn .dollar { opacity: .6; }
-    .cta-note { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
-    .hero-stat {
-      position: absolute;
-      top: 80px;
-      right: var(--px);
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.7;
-      text-align: right;
-    }
-    .hero-stat .status-open { color: var(--accent); }
-
-    /* ── Why (commit log) ── */
-    .commit-row {
-      display: grid;
-      grid-template-columns: 60px 60px 1fr;
-      gap: 24px;
-      padding: 28px 0;
-      border-top: 1px solid var(--line);
-      align-items: baseline;
-    }
-    .commit-keyword { color: var(--accent); font-size: 13px; letter-spacing: .1em; }
-    .commit-num { color: var(--muted); font-size: 13px; }
-    .commit-title { font-size: 22px; font-weight: 500; line-height: 1.3; margin-bottom: 10px; letter-spacing: -0.01em; }
-    .commit-body { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 760px; }
-
-    /* ── How (build script) ── */
-    .build-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      overflow: hidden;
-    }
-    .build-row {
-      display: grid;
-      grid-template-columns: 60px 1fr 2.4fr;
-      gap: 32px;
-      padding: 28px;
-      align-items: baseline;
-    }
-    .build-row + .build-row { border-top: 1px solid var(--line); }
-    .build-step-num { color: var(--accent); font-size: 12px; letter-spacing: .1em; }
-    .build-step-title { font-size: 18px; font-weight: 500; line-height: 1.25; }
-    .build-step-body { color: var(--muted); font-size: 14px; line-height: 1.7; }
-    .build-footer {
-      border-top: 1px solid var(--line);
-      padding: 20px 28px;
-      font-size: 12px;
-      color: var(--muted);
-      background: rgba(127,176,105,0.05);
-    }
-    .build-footer .check { color: var(--green); }
-
-    /* ── Equity ── */
-    .equity-bar-wrap { margin-bottom: 32px; }
-    .equity-bar {
-      display: flex;
-      height: 56px;
-      border: 1px solid var(--line);
-      overflow: hidden;
-    }
-    .equity-slice {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: .06em;
-    }
-    .equity-bar-labels {
-      display: flex;
-      margin-top: 12px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .equity-bar-label { padding-right: 12px; letter-spacing: .08em; text-transform: uppercase; }
-    .json-block {
-      background: var(--card);
-      border: 1px solid var(--line);
-      padding: 24px;
-      font-size: 13px;
-      line-height: 1.8;
-      margin-bottom: 32px;
-    }
-    .json-brace  { color: var(--muted); }
-    .json-key    { color: var(--json-key); }
-    .json-num    { color: var(--accent); }
-    .json-comment{ color: var(--muted); }
-    .equity-callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-    .callout {
-      padding: 24px;
-      border: 1px solid var(--line);
-    }
-    .callout__label {
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-    .callout__body { font-size: 14px; line-height: 1.7; color: var(--fg); }
-
-    /* ── Host ── */
-    .host-eyebrow {
-      font-size: 12px;
-      color: var(--accent);
-      margin-bottom: 40px;
-      letter-spacing: 0;
-      text-transform: none;
-    }
-    .host-intro { display: none; }
-    .host-name {
-      font-size: 80px;
-      font-weight: 500;
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      color: var(--fg);
-      margin-bottom: 16px;
-    }
-    .host-name .dot { color: var(--accent); }
-    .host-bio { font-size: 15px; color: var(--muted); line-height: 1.5; max-width: 560px; letter-spacing: .01em; }
-    .host-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: stretch; min-height: 560px; }
-    .host-photo-col { overflow: hidden; }
-    .host-photo-col img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-    .partner-essay { padding: 0; }
-.partner-photo-banner { position: relative; width: 100%; height: 820px; overflow: hidden; background: #d8d6d2; }
-    .partner-photo-banner img { width: 100%; height: 100%; object-fit: cover; object-position: center 0%; display: block; }
-    .partner-photo-banner--ahmed { height: 720px; background: #d8d6d2; }
-    .partner-photo-banner--ahmed img { object-fit: contain; object-position: center; }
-    .partner-photo-banner .corner { position: absolute; width: 28px; height: 28px; border-color: #2a2a26; border-style: solid; border-width: 0; }
-    .partner-photo-banner .corner.tl { top: 16px; left: 16px; border-top-width: 1.5px; border-left-width: 1.5px; }
-    .partner-photo-banner .corner.tr { top: 16px; right: 16px; border-top-width: 1.5px; border-right-width: 1.5px; }
-    .partner-photo-banner .corner.bl { bottom: 16px; left: 16px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
-    .partner-photo-banner .corner.br { bottom: 16px; right: 16px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
-    .partner-photo-banner .rec-bar { position: absolute; top: 28px; left: 64px; display: flex; align-items: center; gap: 28px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #2a2a26; }
-    .partner-photo-banner .rec-bar .rec-dot { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); }
-    .partner-photo-banner .rec-bar .rec-dot::before { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; display: inline-block; }
-    .partner-photo-banner .overlay-name { position: absolute; left: 64px; top: 50%; transform: translateY(-50%); max-width: 45%; }
-    .partner-photo-banner .overlay-name h2 { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: #1a1a18; margin: 0 0 16px; }
-    .partner-photo-banner .overlay-name h2 .underscore { color: var(--accent); }
-    .partner-photo-banner .overlay-name .sub { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: #4a4a44; letter-spacing: 0; }
-    .partner-photo-banner .overlay-name .sub .arrow { color: var(--accent); margin-right: 8px; }
-    .partner-essay-body { padding: 72px var(--px) 56px; max-width: 980px; }
-    .partner-tag { display: inline-block; border: 1.5px solid var(--accent); color: var(--accent); background: rgba(255,87,34,0.12); padding: 8px 20px; border-radius: 999px; font-size: 14px; letter-spacing: 0.1em; margin-bottom: 40px; font-family: 'JetBrains Mono', monospace; }
-    .partner-headline { font-family: inherit; font-weight: 600; font-size: 100px; line-height: 0.92; letter-spacing: -0.04em; color: var(--fg); margin: 0 0 40px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .partner-headline .chev { color: var(--accent); font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 0.78em; }
-    .essay-lede { font-family: inherit; font-weight: 400; font-size: 22px; line-height: 1.5; color: var(--muted); max-width: 760px; margin: 0 0 52px; }
-    .built-with-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 6px; text-transform: uppercase; }
-    .built-with-name { font-family: inherit; font-size: 22px; font-weight: 600; color: var(--fg); margin-bottom: 4px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.01em; }
-    .built-with-name .chev { color: var(--accent); font-weight: 500; font-family: 'JetBrains Mono', monospace; }
-    .built-with-bio { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); line-height: 1.4; margin-bottom: 28px; max-width: 560px; }
-    .sprint-status { display: flex; width: fit-content; align-items: center; gap: 10px; color: var(--green); padding: 0; font-family: inherit; font-size: 14px; letter-spacing: 0; font-weight: 400; margin-bottom: 20px; }
-    .sprint-status .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; }
-    .partner-request-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--accent-fg); border: none; padding: 14px 22px; font-family: inherit; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; cursor: pointer; border-radius: 4px; }
-    .partner-request-btn:hover { background: #e84e1f; }
-    .partner-request-btn .dollar { color: var(--accent-fg); opacity: 0.7; }
-    .essay-footer { display: flex; justify-content: space-between; align-items: center; padding: 18px var(--px); border-top: 1px solid var(--line); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.08em; }
-    .essay-footer .sprint-status { font-size: 12px; letter-spacing: 0.08em; margin-bottom: 0; gap: 8px; }
-    .essay-footer .sprint-status .dot { width: 7px; height: 7px; }
-    @media (max-width: 480px) {
-      .partner-photo-banner { height: 400px; }
-      .partner-photo-banner img { object-position: center 0%; }
-      .partner-photo-banner .overlay-name { left: 20px; max-width: 55%; top: 56px; transform: none; bottom: auto; }
-      .partner-photo-banner .overlay-name h2 { font-size: 22px; margin-bottom: 6px; color: #1a1a18; }
-      .partner-photo-banner .overlay-name .sub { font-size: 12px; color: #4a4a44; }
-      .partner-photo-banner .rec-bar { left: 20px; top: 18px; font-size: 10px; gap: 12px; }
-      .partner-photo-banner .corner { width: 14px; height: 14px; }
-      .partner-headline { font-size: 42px; }
-      .essay-lede { font-size: 17px; }
-      .partner-essay-body { padding: 36px 20px 36px; }
-    }
-        @media (max-width: 900px) {
-      .partner-headline { font-size: 72px; }
-      .partner-photo-banner { height: 480px; }
-      .partner-photo-banner .overlay-name { left: 32px; max-width: 60%; }
-      .partner-photo-banner .overlay-name h2 { font-size: 36px; }
-      .partner-photo-banner .rec-bar { left: 32px; }
-      .partner-essay-body { padding: 48px 24px 40px; }
-      .essay-lede { font-size: 18px; }
-      .essay-footer { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 24px; }
-    }
-    .host-text-col { padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; }
-    .host-meta { font-size: 13px; line-height: 1.8; margin-top: 8px; }
-    .host-meta .toml-key { color: var(--muted); }
-    .host-meta .toml-eq  { color: var(--muted); }
-    .host-meta .toml-val { color: var(--fg); }
-    .host-profile-card {
-      border: 1px solid var(--line);
-      background: var(--card);
-    }
-    .host-profile-label {
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--line);
-    }
-    .host-portrait {
-      position: relative;
-      border: 1px solid var(--line);
-      margin: 16px;
-      aspect-ratio: 4/3;
-      background: rgba(232,230,223,0.02);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .host-portrait__filename {
-      position: absolute;
-      top: 12px;
-      left: 14px;
-      font-size: 11px;
-      letter-spacing: .1em;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .host-portrait__replace {
-      position: absolute;
-      bottom: 12px;
-      right: 14px;
-      font-size: 11px;
-      letter-spacing: .1em;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .host-profile-meta {
-      padding: 16px 20px;
-      border-top: 1px solid var(--line);
-      font-size: 13px;
-      line-height: 1.8;
-    }
-    .host-profile-meta .toml-key { color: var(--muted); }
-    .host-profile-meta .toml-eq  { color: var(--muted); margin: 0 8px; }
-    .host-profile-meta a { color: var(--accent); }
-    @media (max-width: 767px) {
-      .host-name { font-size: 48px; }
-      .host-layout { grid-template-columns: 1fr; min-height: unset; }
-      .host-photo-col { height: 320px; }
-      .thesis-layout { grid-template-columns: 1fr; }
-      .thesis-content { border-right: none; border-bottom: 1px solid var(--line); padding: 48px 32px; }
-      .thesis-photo-col { height: 280px; }
-      .host-text-col { padding: 32px 24px; }
+    .thesis .eyebrow { margin-bottom: clamp(28px,5vh,56px); }
+    .thesis p {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(30px,4.6vw,80px); line-height: 1.05; letter-spacing: -0.03em;
+      color: var(--ink); text-wrap: balance; max-width: clamp(680px,60vw,1180px);
     }
 
-    .host-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
-    .duties-label {
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
+    /* ── 02 · The room (builders) ── */
+    .room { height: 100%; display: flex; flex-direction: column; align-items: center; overflow: hidden; padding: clamp(52px,7.5vh,96px) 0 0; }
+    .room .head { margin-bottom: clamp(16px,2.6vh,30px); justify-content: center; }
+    .room h2 {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(38px,6.4vw,112px); line-height: .94; letter-spacing: -0.04em;
+      color: var(--ink); text-align: center; text-wrap: balance;
     }
-    .duties-card {
-      background: var(--card);
-      border: 1px solid var(--line);
+    .room__sub {
+      margin-top: clamp(16px,2.4vh,28px); font-size: clamp(15px,1.3vw,19px);
+      text-align: center; max-width: 52ch; padding: 0 24px;
     }
-    .duty-row {
-      padding: 14px 18px;
-      font-size: 13px;
-      line-height: 1.6;
-      display: flex;
-      gap: 12px;
+    /* Solid accent button — the committed CTA treatment. */
+    .btn-solid {
+      appearance: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 14px;
+      padding: 15px 26px; border-radius: 2px; background: var(--accent); color: #141210;
+      font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-decoration: none;
+      transition: transform 140ms ease, box-shadow 140ms ease;
     }
-    .duty-row + .duty-row { border-top: 1px solid var(--line); }
-    .duty-num { color: var(--accent); flex: 0 0 auto; }
+    .btn-solid:hover { transform: translateY(-1px); box-shadow: 0 8px 24px -8px var(--accent); }
+    .room .btn-solid { margin-top: clamp(20px,3vh,34px); padding: 14px 26px; }
 
-    /* ── Cohort ── */
-    .cohort-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      padding: 32px;
+    .rail {
+      position: relative; flex: 1; width: 100%; min-height: 0;
+      margin: clamp(10px,2vh,28px) 0 clamp(14px,3vh,36px); cursor: grab; touch-action: pan-y;
     }
-    .cohort-problem { font-size: 13px; color: var(--muted); margin: 16px 0 24px; line-height: 1.6; max-width: 680px; }
-    .cohort-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--line);
+    .rail.is-dragging { cursor: grabbing; }
+    .bld {
+      position: absolute; left: 50%; top: 50%; width: var(--bld-cw, 268px);
+      aspect-ratio: 0.68; transform-origin: center center; will-change: transform, opacity;
     }
-    .cohort-title { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; }
-    .cohort-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
+    .bld__frame { position: absolute; inset: 0; overflow: hidden; border-radius: 2px; background: var(--img-base); border: 1px solid var(--line); }
+    .bld__photo { position: absolute; inset: 0; background-size: cover; filter: grayscale(1) contrast(1.03); }
+    .bld__placeholder {
+      position: absolute; inset: 0; background-color: var(--img-base);
+      background-image: repeating-linear-gradient(135deg, var(--img-stripe) 0 1.5px, transparent 1.5px 13px);
     }
-    .cohort-pill-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
+    .bld__scrim {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to bottom, rgba(10,9,7,0.82) 0%, rgba(10,9,7,0.34) 34%, rgba(10,9,7,0) 62%);
     }
-    .toml-rows { display: flex; flex-direction: column; gap: 12px; }
-    .toml-row {
-      display: grid;
-      grid-template-columns: 180px 12px 1fr;
-      gap: 16px;
-      font-size: 14px;
-      align-items: baseline;
+    .bld__text { position: absolute; top: 7%; left: 8%; right: 8%; text-align: left; pointer-events: none; }
+    .bld__chip {
+      display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 2px;
+      background: rgba(20,18,15,0.55); border: 1px solid rgba(244,240,230,0.18);
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--overlay-ink); white-space: nowrap;
     }
-    .toml-key { color: var(--muted); letter-spacing: .06em; }
-    .toml-eq  { color: var(--muted); }
-    .toml-val { color: var(--fg); }
-
-    /* ── Apply ── */
-    .apply-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; }
-    .apply-info-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      padding: 18px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.8;
-      margin-top: 28px;
+    .bld__chip .dot { color: var(--accent); }
+    .bld--filled .bld__chip { margin-bottom: 14px; }
+    .bld__line {
+      font-family: var(--display); font-weight: 600; font-size: 20px; line-height: 1.2;
+      letter-spacing: -0.025em; color: var(--overlay-ink); text-wrap: balance;
     }
-    .apply-info-card .dollar { color: var(--accent); }
-
-    /* ── Modal ── */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(12,12,10,0.88);
-      z-index: 100;
-      overflow-y: auto;
-      padding: 40px 20px;
-    }
-    .modal-backdrop.is-open { display: flex; align-items: flex-start; justify-content: center; }
-    .modal {
-      background: var(--bg);
-      border: 1px solid var(--line);
-      width: 100%;
-      max-width: 860px;
-      position: relative;
-    }
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 28px;
-      border-bottom: 1px solid var(--line);
-      font-size: 11px;
-      letter-spacing: .18em;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-    .modal-close {
-      background: none;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 11px;
-      letter-spacing: .1em;
-      padding: 5px 10px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-    .modal-close:hover { border-color: rgba(232,230,223,0.3); color: var(--fg); }
-    .modal-body { padding: 40px 28px; }
-    .modal-centered { max-width: 600px; margin: 0 auto; }
-    .modal-info-title {
-      font-size: 28px;
-      font-weight: 500;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-    }
-    @media (max-width: 767px) {
-      .modal-body { padding: 28px 20px; }
+    .bld__sprint {
+      margin-top: 10px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em;
+      text-transform: uppercase; color: rgba(244,240,230,0.6);
     }
 
-    /* ── Form ── */
-    .form { display: flex; flex-direction: column; gap: 18px; }
-    .form-field { display: flex; flex-direction: column; }
-    .form-label {
-      font-size: 11px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
+    /* ── 03–06 · Sprint panels (Split) ── */
+    .sprint { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+    .sprint__visual { position: relative; overflow: hidden; background: var(--img-base); }
+    /* The partner shot is landscape in a tall column, so plain `cover`
+       has to over-zoom and clip ~40% of the frame. `--img-fit` lets a
+       sprint pull the scale back below cover: the photo then stops
+       short of the panel floor and the dark field carries the overlay.
+       Set `imgFit` per sprint in the data block; omit it for cover. */
+    .sprint__photo {
+      position: absolute; inset: 0;
+      background-size: var(--img-fit, cover);
+      background-repeat: no-repeat;
+      filter: grayscale(1) contrast(1.02);
     }
-    .form-label .required { color: var(--accent); margin-left: 4px; }
-    .form-input, .form-textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      background: var(--input);
-      color: var(--fg);
-      font-family: inherit;
-      font-size: 14px;
-      line-height: 1.4;
-      outline: none;
-      border-radius: 0;
-      -webkit-appearance: none;
+    /* When --img-fit pulls the scale below cover the photo no longer
+       reaches the panel floor, so fade its lower edge out instead of
+       leaving a hard seam against --img-base. No-op under cover. */
+    .sprint__photo[style*="--img-fit"] {
+      -webkit-mask-image: linear-gradient(to bottom, #000 0 52%, transparent 88%);
+              mask-image: linear-gradient(to bottom, #000 0 52%, transparent 88%);
     }
-    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
-    .form-input:focus, .form-textarea:focus {
-      outline: 1px solid var(--accent);
-      outline-offset: -1px;
+    .sprint__placeholder {
+      position: absolute; inset: 0; background-color: var(--img-base);
+      background-image: repeating-linear-gradient(135deg, var(--img-stripe) 0 1.5px, transparent 1.5px 13px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
     }
-    .form-textarea { resize: vertical; min-height: 78px; }
-    .form-input[type="date"] { color-scheme: dark; }
-    .submit-btn {
-      margin-top: 8px;
-      padding: 14px 18px;
-      background: var(--accent);
-      color: var(--accent-fg);
-      border: none;
-      font-size: 12px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      text-align: center;
+    .sprint__initials {
+      width: 96px; height: 96px; border-radius: 50%; border: 1px solid var(--accent);
+      display: flex; align-items: center; justify-content: center; color: var(--accent);
+      font-family: var(--mono); font-size: 30px; font-weight: 500;
     }
-    .submit-btn:hover:not(:disabled) { background: #e84e1f; }
-    .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
-    .form-error { font-size: 11px; color: #ff5722; margin-top: 4px; letter-spacing: .04em; }
+    .sprint__ph-note { font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    .sprint__ph-name { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); letter-spacing: .02em; }
+    .sprint__scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%; pointer-events: none;
+      background: linear-gradient(to top, rgba(8,7,5,0.94) 0%, rgba(8,7,5,0.78) 26%, rgba(8,7,5,0.32) 58%, rgba(8,7,5,0) 100%);
+    }
+    .sprint__overlay { position: absolute; left: 48px; right: 48px; bottom: 54px; }
+    .sprint__head {
+      font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .2em;
+      text-transform: uppercase; margin-bottom: 22px; display: flex; gap: 2.4em; flex-wrap: wrap;
+    }
+    .sprint__head .code { color: var(--overlay-soft); }
+    .sprint__space {
+      font-family: var(--display); font-size: clamp(40px,4.4vw,70px); font-weight: 700;
+      line-height: .94; letter-spacing: -0.04em; color: var(--overlay-ink); margin-bottom: 20px;
+    }
+    .sprint__partner {
+      font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -0.01em;
+      color: var(--overlay-ink); margin-bottom: 7px;
+    }
+    .sprint__credential { font-family: var(--mono); font-size: 12px; color: var(--overlay-soft); line-height: 1.55; letter-spacing: .01em; }
+    .sprint__progress-pill {
+      display: inline-flex; align-items: center; gap: 9px; margin-top: 20px;
+      padding: 7px 14px; border-radius: 2px; border: 1px solid var(--accent); background: rgba(10,9,7,0.35);
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--overlay-ink);
+    }
+    .sprint__progress-pill .dot { color: var(--accent); }
+    .sprint__progress-pill--done { border-color: var(--green); }
+    .sprint__progress-pill--done .dot { color: var(--green); }
+    /* Space tag sits under the problem title when a sprint has both. */
+    .sprint__spacetag {
+      font-family: var(--mono); font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--overlay-soft); margin: -10px 0 18px;
+    }
+    .sprint__spacetag .sep { margin: 0 .9em; opacity: .5; }
 
-    /* ── Success state ── */
-    .success-panel {
-      padding: 32px 28px;
-      border: 1px solid var(--line);
-      background: var(--card);
+    /* Cross-link between the two rounds of the same problem. */
+    .xref {
+      appearance: none; border: none; background: transparent; cursor: pointer;
+      align-self: flex-start; text-align: left; padding: 0; margin-top: -6px;
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted);
+      transition: color 150ms ease;
     }
-    .success-eyebrow {
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-    .success-headline { font-size: 28px; line-height: 1.15; margin-bottom: 12px; color: var(--fg); }
-    .success-body { font-size: 14px; line-height: 1.55; color: var(--muted); }
+    .xref span { color: var(--accent); transition: transform 150ms ease; display: inline-block; }
+    .xref:hover { color: var(--accent); }
+    .xref:hover span { transform: translateX(4px); }
 
-    /* ── Closing ── */
-    .closing-note { font-size: 22px; line-height: 1.5; max-width: 920px; color: var(--fg); letter-spacing: -0.01em; }
-    .closing-eyebrow {
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
+    .sponsor-lockup { display: flex; align-items: center; gap: 12px; }
+    .sponsor-lockup__mark {
+      width: 42px; height: 42px; border-radius: 2px; flex: 0 0 42px;
+      background: rgba(244,240,230,0.1); border: 1px solid rgba(244,240,230,0.3);
+      background-image: repeating-linear-gradient(135deg, rgba(244,240,230,0.12) 0 1.5px, transparent 1.5px 9px);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--overlay-ink);
+    }
+    .sponsor-lockup__label {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(244,240,230,0.62); margin-bottom: 3px;
+    }
+    .sponsor-lockup__name { font-family: var(--mono); font-size: 13.5px; font-weight: 500; color: var(--overlay-ink); }
+    .sponsor-lockup__wrap { margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px solid rgba(244,240,230,0.22); }
+
+    .sprint__info {
+      background: var(--panel); display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(32px,5vh,72px) clamp(48px,5vw,96px); gap: clamp(18px,2.6vh,34px);
+      overflow-y: auto; max-height: 100%;
+    }
+    .sprint__info--building {
+      justify-content: flex-start; gap: clamp(15px,2.1vh,26px);
+      padding: clamp(70px,9vh,96px) clamp(48px,5vw,96px) clamp(28px,4vh,56px);
+    }
+    .sprint__oneline {
+      font-family: var(--display); font-size: clamp(28px,2.8vw,42px); font-weight: 600;
+      line-height: 1.1; letter-spacing: -0.03em; color: var(--ink); text-wrap: balance;
+    }
+    .sprint__problem {
+      font-family: var(--display); font-size: 17.5px; font-weight: 400; line-height: 1.55;
+      letter-spacing: -0.005em; color: var(--ink-soft); text-wrap: pretty; max-width: 46ch;
+    }
+    .sprint__nowbuilding {
+      font-family: var(--display); font-size: clamp(23px,2.3vw,32px); font-weight: 600;
+      line-height: 1.18; letter-spacing: -0.025em; color: var(--ink); text-wrap: balance;
     }
 
-    /* ── Footer ── */
+    .metagrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 40px; }
+    .metagrid > div { display: flex; flex-direction: column; gap: 6px; }
+    .metagrid .val { font-family: var(--mono); font-size: 14px; color: var(--ink); }
+
+    .block { border-top: 1px solid var(--line); padding-top: 24px; }
+    .block--problem { padding-top: 26px; }
+    .block__label { display: block; margin-bottom: 12px; }
+    .block__head {
+      display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted-soft);
+    }
+
+    .roster { display: flex; flex-direction: column; }
+    .roster__row { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-top: 1px solid var(--line-soft); }
+    .roster__row:first-child { border-top: none; }
+    .avatar {
+      width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%;
+      border: 1px solid var(--accent); color: var(--accent); background: var(--soft-fill);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: .02em;
+    }
+    .roster__name { font-family: var(--mono); font-size: 13.5px; color: var(--ink); margin-bottom: 2px; }
+    .roster__role { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .02em; }
+    .roster__li {
+      flex: 0 0 auto; padding: 5px 10px; border-radius: 2px; border: 1px solid var(--line);
+      color: var(--muted); text-decoration: none;
+      font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase;
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .roster__li:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* Room updates — 'Changelog' variant (the committed style). */
+    .feed { display: flex; flex-direction: column; }
+    .feed__item { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; padding-bottom: 18px; }
+    .feed__item:last-child { padding-bottom: 0; }
+    .feed__rail { display: flex; flex-direction: column; align-items: center; padding-top: 3px; }
+    .feed__node { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--accent); background: transparent; flex: 0 0 auto; }
+    .feed__item:first-child .feed__node { background: var(--accent); }
+    .feed__stem { flex: 1; width: 1px; background: var(--line); margin-top: 4px; }
+    .feed__when { font-family: var(--mono); font-size: 10.5px; color: var(--muted-soft); margin-bottom: 5px; letter-spacing: .02em; }
+    .feed__when b { color: var(--accent); font-weight: 400; }
+    .feed__title { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 5px; }
+    .feed__body { font-family: var(--display); font-size: 13.5px; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
+
+    /* Sponsor detail block, right-hand info panel */
+    .sponsor-strip { border-top: 1px solid var(--line); padding-top: 22px; }
+    .sponsor-strip__label { margin-bottom: 14px; }
+    .sponsor-strip__row { display: flex; align-items: center; gap: 13px; margin-bottom: 16px; }
+    .sponsor-strip__mark {
+      width: 48px; height: 48px; border-radius: 2px; flex: 0 0 48px;
+      background: var(--soft-fill); border: 1px solid var(--line);
+      background-image: repeating-linear-gradient(135deg, var(--img-stripe) 0 1.5px, transparent 1.5px 9px);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--ink);
+    }
+    .sponsor-strip__name { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--ink); }
+    .sponsor-strip__kind { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .02em; }
+    .plus-list { display: flex; flex-direction: column; gap: 8px; }
+    .plus-list div { display: flex; gap: 11px; align-items: baseline; font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
+    .plus-list .plus { color: var(--accent); }
+
+    /* The sprint's research question — the one pull-quote on the page. */
+    .question { border-left: 2px solid var(--accent); padding-left: 20px; }
+    .question__body {
+      font-family: var(--display); font-weight: 600; font-size: clamp(16px, 1.5vw, 20px);
+      line-height: 1.35; letter-spacing: -0.015em; color: var(--ink); text-wrap: pretty; max-width: 44ch;
+    }
+
+    /* Designed empty state for copy that has not landed yet. */
+    .tbc {
+      font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted-soft); border: 1px dashed var(--line); border-radius: 2px;
+      padding: 14px 16px;
+      background-image: repeating-linear-gradient(135deg, var(--img-stripe) 0 1.5px, transparent 1.5px 13px);
+    }
+    .avatar--pending { border-style: dashed; }
+    /* Photo avatars: grayscale to sit inside the board's one-accent
+       palette, since these arrive as mixed-colour LinkedIn headshots. */
+    .avatar--photo {
+      background-size: cover; background-position: center top;
+      filter: grayscale(1) contrast(1.02); border-color: var(--line);
+    }
+
+    /* ── 07 · Equity ── */
+    .equity {
+      height: 100%; display: flex; flex-direction: column; justify-content: center;
+      max-width: 1360px; margin: 0 auto; width: 100%;
+      padding: clamp(40px,6vh,88px) clamp(56px,6vw,110px) clamp(40px,6vh,88px) clamp(30px,5vw,96px);
+    }
+    .equity .head { margin-bottom: clamp(20px,3.5vh,38px); }
+    .equity__figure { display: flex; align-items: flex-start; gap: 8px; color: var(--accent); }
+    .equity__figure .n { font-family: var(--display); font-weight: 800; font-size: clamp(120px,18vw,220px); line-height: .82; letter-spacing: -0.05em; }
+    .equity__figure .pct { font-family: var(--display); font-weight: 700; font-size: clamp(38px,5.2vw,64px); margin-top: clamp(8px,1.6vh,14px); }
+    .equity h2 {
+      margin: clamp(18px,2.6vh,28px) 0 0;
+      font-family: var(--display); font-weight: 700; font-size: clamp(24px,3vw,42px);
+      line-height: 1.08; letter-spacing: -0.03em; color: var(--ink); max-width: 22ch; text-wrap: balance;
+    }
+    .equity__rows {
+      display: flex; gap: clamp(30px,4.5vw,64px); margin-top: clamp(28px,4.5vh,52px);
+      border-top: 1px solid var(--line); padding-top: clamp(22px,3vh,34px);
+      align-items: flex-start; flex-wrap: wrap;
+    }
+    .equity__rows .n { font-family: var(--display); font-weight: 700; font-size: clamp(26px,3.2vw,40px); letter-spacing: -0.02em; color: var(--accent); }
+    .equity__rows .l { font-family: var(--mono); font-size: clamp(11px,1vw,13px); color: var(--muted); margin-top: 6px; }
+    .equity__note { flex: 1; max-width: 38ch; margin-left: auto; min-width: 28ch; font-size: clamp(14px,1.15vw,17px); }
+
+    /* ── 08 · Why sprints ── */
+    .why {
+      height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: clamp(56px,8vh,110px) clamp(56px,6vw,110px);
+    }
+    .why .head { margin-bottom: clamp(20px,3.5vh,38px); }
+    .why--bet .head { margin-bottom: clamp(28px,5vh,56px); }
+    .why__stat { font-family: var(--display); font-weight: 800; font-size: clamp(96px,17vw,240px); line-height: .86; letter-spacing: -0.05em; color: var(--accent); }
+    .why h2 { margin: clamp(14px,2.2vh,26px) 0 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px,4vw,58px); letter-spacing: -0.03em; color: var(--ink); }
+    .why--bet h2 { margin: 0; font-size: clamp(38px,6vw,104px); line-height: 1; letter-spacing: -0.04em; max-width: 15ch; text-wrap: balance; }
+    .why__body { margin: clamp(22px,3vh,34px) 0 0; font-size: clamp(15px,1.3vw,19px); max-width: 54ch; }
+    .why--bet .why__body { margin-top: clamp(26px,3.5vh,44px); max-width: 58ch; }
+
+    /* ── 09 · How it works ── */
+    .how {
+      height: 100%; display: flex; flex-direction: column; justify-content: center;
+      max-width: 1360px; margin: 0 auto; width: 100%;
+      padding: clamp(40px,6vh,88px) clamp(56px,6vw,110px) clamp(76px,9vh,116px) clamp(30px,5vw,96px);
+      gap: clamp(18px,3vh,34px);
+    }
+
+    /* Page footer — pinned to the bottom of the final panel. */
     .footer {
-      padding: 24px var(--px);
+      position: absolute; left: 0; right: 0; bottom: 0;
+      display: flex; justify-content: space-between; gap: 12px;
+      padding: 24px clamp(30px,5vw,96px);
       border-top: 1px solid var(--line);
-      font-size: 11px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
       color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      letter-spacing: .06em;
+    }
+    .step {
+      position: relative; display: flex; align-items: center;
+      min-height: clamp(120px,18vh,168px); padding: clamp(14px,2.2vh,26px) 0;
+      border-top: 1px solid var(--line);
+    }
+    .step:last-child { border-bottom: 1px solid var(--line); }
+    .step__ghost {
+      position: absolute; left: -0.06em; font-family: var(--display); font-weight: 800;
+      font-size: clamp(72px,9vw,132px); line-height: 1; letter-spacing: -0.04em;
+      color: var(--ink); opacity: .055; pointer-events: none;
+    }
+    .step__body { position: relative; padding-left: clamp(96px,13vw,190px); }
+    .step__body h3 { font-family: var(--display); font-weight: 700; font-size: clamp(22px,2.6vw,32px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 6px; }
+    .step__body p { font-size: clamp(14px,1.1vw,17px); max-width: 68ch; }
+
+    /* ─────────────────────────────────────────────────────────────
+       Responsive.
+       The prototype is desktop-only and defers mobile to the
+       designer. This is a conservative fallback so the page works
+       on phones — not a designed breakpoint. Flag for review.
+       ───────────────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      html, body { overflow: auto; }
+      .deck { scroll-snap-type: none; height: auto; overflow: visible; }
+      .panel { height: auto; min-height: 100svh; scroll-snap-align: none; }
+      .dotnav, .hint, .hero__jump { display: none; }
+      .topbar { padding: 14px 18px; font-size: 10px; }
+      .topbar .sect { display: none; }
+
+      .hero { padding: clamp(72px,16vh,110px) 22px 48px; }
+      .hero__lede { font-size: clamp(19px,5.4vw,28px); max-width: none; }
+
+      .sprint { grid-template-columns: 1fr; }
+      .sprint__visual { min-height: 76svh; }
+      .sprint__overlay { left: 22px; right: 22px; bottom: 30px; }
+      .sprint__info, .sprint__info--building { padding: 34px 22px 56px; overflow: visible; max-height: none; }
+      .metagrid { gap: 16px 24px; }
+
+      .thesis, .why, .equity, .how { padding-left: 22px; padding-right: 22px; }
+      .equity__note { margin-left: 0; }
+      .footer { flex-direction: column; gap: 8px; padding: 20px 22px; }
+      .step { align-items: flex-start; }
+      .step__body { padding-left: 0; padding-top: 30px; }
+      .step__ghost { font-size: 56px; top: -4px; }
+
+      .room { padding: clamp(72px,14vh,110px) 0 48px; }
+      .rail {
+        display: flex; gap: 14px; overflow-x: auto; overflow-y: hidden;
+        scroll-snap-type: x mandatory; padding: 0 22px; cursor: default;
+        -webkit-overflow-scrolling: touch; min-height: 58svh;
+      }
+      .rail::-webkit-scrollbar { height: 0; }
+      .bld {
+        position: relative; left: auto; top: auto; transform: none !important;
+        opacity: 1 !important; visibility: visible !important;
+        flex: 0 0 62vw; max-width: 280px; scroll-snap-align: center;
+      }
+      .bld__text { opacity: 1 !important; }
     }
 
-    /* ── Responsive ── */
-
-    /* Cohort title: long identifier must wrap cleanly */
-    .cohort-title { overflow-wrap: break-word; word-break: break-all; }
-
-    /* JSON block: scroll horizontally rather than overflow */
-    .json-block { overflow-x: auto; }
-
-    /* CTA row wraps on narrow widths */
-    .cta-row { flex-wrap: wrap; }
-
-    @media (max-width: 1023px) {
-      :root { --px: 24px; }
-      .hero-h1 { font-size: 56px; }
-      .hero-stat { position: static; text-align: left; margin-top: 32px; }
-      .host-grid,
-      .apply-grid,
-      .equity-callouts { grid-template-columns: 1fr; }
-      .build-row { grid-template-columns: 48px 1fr; }
-      .build-step-body { grid-column: 2; }
-      .commit-row { grid-template-columns: 48px 48px 1fr; }
-    }
-    @media (max-width: 767px) {
-      :root { --px: 16px; }
-      .hero-h1 { font-size: 40px; }
-      .hero-sub { font-size: 20px; }
-      .statusbar__left .v-hide, .statusbar__left .m-hide { display: none; }
-      .statusbar__right { gap: 12px; font-size: 10px; }
-      .build-row { grid-template-columns: 1fr; gap: 12px; padding: 20px var(--px); }
-      .build-step-body { grid-column: unset; }
-      .commit-row { grid-template-columns: 1fr; gap: 8px; }
-      .commit-keyword, .commit-num { display: none; }
-      .toml-row { grid-template-columns: 100px 12px 1fr; font-size: 12px; }
-      .cohort-header { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .cohort-title { font-size: 20px; }
-      .h2 { font-size: 28px; }
-      /* Equity bar: hide label text on tiny slices, show only on founders */
-      .equity-bar-labels { display: none; }
-      .equity-slice { font-size: 11px; }
-      /* Footer stacks on mobile */
-      .footer { flex-direction: column; gap: 8px; }
-      /* Modal header wraps */
-      .modal-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px 20px; }
-      .modal-body { padding: 24px 16px; }
-      /* Section padding tighter */
-      .section { padding: 48px var(--px); }
-      .section--hero { padding: 56px var(--px) 48px; }
-      .host-name { font-size: 44px; }
+    /* ── Reduced motion — the prototype omitted this; required. ── */
+    @media (prefers-reduced-motion: reduce) {
+      .deck { scroll-behavior: auto; }
+      .sb-bounce, .sb-pulse, .sb-feedin { animation: none !important; }
+      .sb-feedin { opacity: 1; transform: none; }
+      * { transition-duration: 1ms !important; }
     }
   </style>
 </head>
 <body>
-  <!-- Status bar — full width -->
-  <div class="statusbar" role="banner">
-    <div class="statusbar__left">
-      <span><span class="dot" aria-hidden="true">●</span> seed-to-fruit / sprints</span>
-      <span class="v-hide">v0.1.0</span>
-      <span class="m-hide">main</span>
-    </div>
-    <div class="statusbar__right">
-      <span>cohort_01.status: <span class="open">OPEN</span></span>
-      <span id="js-date">2026-05-05</span>
-    </div>
-  </div>
 
-  <!-- Tick strip — full width -->
-  <div class="tickstrip" aria-hidden="true" id="js-ticks"></div>
-
-<div class="page-wrap">
-
-  <!-- Hero -->
-  <section class="section section--hero">
-    <p class="hero-eyebrow"># README · Sprints — by Seed to Fruit</p>
-    <h1 class="hero-h1">SPRINTS<span class="cursor">_</span></h1>
-    <p class="hero-sub">
-      <span class="prefix" aria-hidden="true">&gt; </span>an experiment in assembling companies, by Seed to Fruit
-    </p>
-
-    <div class="cta-row">
-      <a class="cta-btn" id="open-modal-btn" href="request.html">
-        <span class="dollar" aria-hidden="true">$</span> request_to_join <span aria-hidden="true">→</span>
-      </a>
-      <span class="cta-note">First cohort opening soon. Invite-only.</span>
-    </div>
-
-    <div class="hero-stat" aria-label="Sprint details">
-      <div>phase    : 01 / sprints</div>
-      <div>duration : 2 weeks</div>
-      <div>group    : 8–12</div>
-      <div>cohort   : 01</div>
-      <div class="status-open">status   : open</div>
-    </div>
-  </section>
-
-  <!-- Thesis -->
-  <section class="section section--thesis" style="padding:0;">
-    <div class="thesis-layout">
-      <div class="thesis-content">
-        <div class="thesis__label">// thesis</div>
-        <p class="thesis__body">Sprints brings together 8–12 people who have spent years inside a problem: engineers, designers, and ex-founders. For two weeks of intensive work. By the end, everyone in the room owns a piece of what gets built.</p>
-      </div>
-      <div class="thesis-photo-col">
-        <div class="thesis-photo-strip">
-          <div class="thesis-photo-track">
-            <img src="office.png" alt="Office space" />
-            <img src="Building.png" alt="Sprints building" />
-            <img src="host-portrait.jpg" alt="Host portrait" />
-            <img src="office.png" alt="Office space" />
-            <img src="Building.png" alt="Sprints building" />
-            <img src="host-portrait.jpg" alt="Host portrait" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Cohort 02 -->
-  <section class="section" style="padding:0;">
-    <div class="partner-essay">
-      <div class="essay-footer">
-        <span>seed-to-fruit / sprints / partner · spatial_ai</span>
-        <span class="sprint-status" style="justify-content:flex-end;"><span class="dot"></span> sprint_open</span>
-      </div>
-      <div class="partner-photo-banner">
-        <img src="maien-hamed.jpg" alt="Maien Hamed — Space.Owned" loading="lazy" decoding="async" />
-        <span class="corner tl"></span>
-        <span class="corner tr"></span>
-        <span class="corner bl"></span>
-        <span class="corner br"></span>
-        <div class="rec-bar">
-          <span class="rec-dot">REC</span>
-          <span>BUILD WITH</span>
-        </div>
-        <div class="overlay-name">
-          <h2>Maien.Hamed<span class="underscore">_</span></h2>
-          <div class="sub"><span class="arrow">&gt;</span>Ex-Meta, PhD in computational mechanics</div>
-        </div>
-      </div>
-      <div class="partner-essay-body">
-        <div class="partner-tag"># SPACE.OWNED</div>
-        <h1 class="partner-headline"><a href="problem.html" style="color:inherit;text-decoration:none;">Spatial AI <span class="chev">&gt;</span></a></h1>
-        <p class="essay-lede">Spatial AI is the ability for machines and software systems to: perceive 3D environments, and localize themselves within them, reason and predict physical interactions, and act within physical space. <a href="problem.html" style="color:var(--accent);border-bottom:1px solid var(--accent);padding-bottom:1px;">Learn more →</a></p>
-        <div class="built-with-label">BUILT WITH</div>
-        <div class="built-with-name"><a href="partner.html" style="color:inherit;">Maien Hamed <span class="chev">&gt;</span></a></div>
-        <p class="built-with-bio">Ex-Meta Reality Labs Research. PhD in computational mechanics.</p>
-        <button class="partner-request-btn" onclick="window.location.href='request.html'">
-          <span class="dollar" aria-hidden="true">$</span> request_to_join <span aria-hidden="true">→</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- 02 Equity -->
-  <section id="equity" class="section">
-    <p class="eyebrow"># 02 · Equity for all <span class="comment">// cap_table.json</span></p>
-    <h2 class="h2">Everyone who shows up gets a piece.</h2>
-    <p class="body-text" style="max-width:720px;margin-bottom:40px;">When a company forms out of a Sprint, the cap table is split four ways. The 2–3 founders who continue own the majority. The rest is held for the people and partners who made the company possible.</p>
-
-    <!-- Stacked bar -->
-    <div class="equity-bar-wrap" role="img" aria-label="Equity split: 85% Founders, 7% Seed to Fruit, 5% The Room, 3% Host">
-      <div class="equity-bar">
-        <div class="equity-slice" style="width:85%;background:var(--accent);color:#fff;border-right:1px solid var(--bg);">85%</div>
-        <div class="equity-slice" style="width:7%;background:var(--green);color:var(--bg);border-right:1px solid var(--bg);">7%</div>
-        <div class="equity-slice" style="width:5%;background:var(--muted);color:#fff;border-right:1px solid var(--bg);">5%</div>
-        <div class="equity-slice" style="width:3%;background:var(--amber);color:var(--bg);">3%</div>
-      </div>
-      <div class="equity-bar-labels" aria-hidden="true">
-        <div class="equity-bar-label" style="width:85%">Founders</div>
-        <div class="equity-bar-label" style="width:7%">Seed to Fruit</div>
-        <div class="equity-bar-label" style="width:5%">The Room</div>
-        <div class="equity-bar-label" style="width:3%">Host</div>
-      </div>
-    </div>
-
-    <!-- JSON block -->
-    <div class="json-block" aria-label="Cap table JSON">
-      <span class="json-brace">{</span><br>
-      <span style="padding-left:24px;display:inline-block"><span class="json-key">"founders"</span><span class="json-brace">: </span><span class="json-num">0.85</span><span class="json-brace">,</span>  <span class="json-comment">// the 2–3 who continue</span></span><br>
-      <span style="padding-left:24px;display:inline-block"><span class="json-key">"seed_to_fruit"</span><span class="json-brace">: </span><span class="json-num">0.07</span><span class="json-brace">,</span></span><br>
-      <span style="padding-left:24px;display:inline-block"><span class="json-key">"host"</span><span class="json-brace">: </span><span class="json-num">0.03</span><span class="json-brace">,</span></span><br>
-      <span style="padding-left:24px;display:inline-block"><span class="json-key">"the_room"</span><span class="json-brace">: </span><span class="json-num">0.05</span>  <span class="json-comment">// everyone who showed up</span></span><br>
-      <span class="json-brace">}</span>
-    </div>
-
-    <!-- Callouts -->
-    <div class="equity-callouts">
-      <div class="callout">
-        <div class="callout__label">// activation</div>
-        <p class="callout__body">Equity only activates if a company forms. If no team continues, the whole thing dissolves and nobody gets anything. But if 2–3 people say "we're doing this," everyone who was in that room owns a piece.</p>
-      </div>
-      <div class="callout">
-        <div class="callout__label">// network</div>
-        <p class="callout__body">The people who don't continue become the company's most valuable asset: a small, dense network of operators and builders who already know the problem cold.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 03 Why Sprints -->
-  <section id="why" class="section">
-    <p class="eyebrow"># 03 · Why Sprints</p>
+  <header class="topbar" role="banner">
     <div>
-      <div class="commit-row">
-        <span class="commit-keyword">commit</span>
-        <span class="commit-num">01</span>
-        <div>
-          <div class="commit-title">99% of startups will fail.</div>
-          <p class="commit-body">Everyone says that most startups fail, and that's just the startup math. But is it? Or is it the predictable result of a specific way of assembling companies that almost nobody questions? We built Sprints to test that. It's an experiment in assembling companies.</p>
-        </div>
-      </div>
-      <div class="commit-row">
-        <span class="commit-keyword">commit</span>
-        <span class="commit-num">02</span>
-        <div>
-          <div class="commit-title">Right problem, right people, right time.</div>
-          <p class="commit-body">Almost everything else is secondary. Most accelerators will waste your time on: workshops, panels, pitch nights, and events. But the real work is in choosing the right problem, finding the right people, at the right time, and creating the conditions where a real company can emerge.</p>
-        </div>
-      </div>
+      <span style="color:var(--accent)">●</span>
+      <span class="brand">Seed to Fruit</span>
     </div>
-  </section>
+    <div id="topbar-right"></div>
+  </header>
 
-  <!-- 02 How it works -->
-  <section id="how" class="section">
-    <p class="eyebrow"># 04 · How it works <span class="comment">// build_company.sh</span></p>
-    <div class="build-card">
-      <div class="build-row">
-        <span class="build-step-num">&gt; 01</span>
-        <div class="build-step-title">A problem is chosen.</div>
-        <p class="build-step-body">Seed to Fruit starts by picking something that is worth working on: an industry, a problem, or an idea. Something like "How homes get built", or "Teaching kids a second language". Real, specific, hard.</p>
-      </div>
-      <div class="build-row">
-        <span class="build-step-num">&gt; 02</span>
-        <div class="build-step-title">A room is assembled.</div>
-        <p class="build-step-body">We try to find 8 to 12 people who are the most relevant to the problem, people who know the industry in and out, engineers who've been hacking on it, founders who tried and failed, designers who've been thinking about it for years.</p>
-      </div>
-      <div class="build-row">
-        <span class="build-step-num">&gt; 03</span>
-        <div class="build-step-title">Two weeks, remote.</div>
-        <p class="build-step-body">Conditions designed and engineered for something to emerge. The Host anchors judgment. Everyone works on the problem together, no pitches, no demo days, just the work.</p>
-      </div>
-      <div class="build-row">
-        <span class="build-step-num">&gt; 04</span>
-        <div class="build-step-title">A founding team is selected.</div>
-        <p class="build-step-body">At the end, Seed to Fruit and the Host invite 3–5 of the strongest to form a company. Everyone else becomes a shareholder and part of the network around it.</p>
-      </div>
-      <div class="build-footer">
-        <span class="check" aria-hidden="true">✓</span> exit code 0 — founding team identified
-      </div>
-    </div>
-  </section>
+  <nav class="dotnav" id="dotnav" aria-label="Panel navigation"></nav>
 
-  <!-- Closing note -->
-  <section class="section">
-    <div class="closing-eyebrow">// note</div>
-    <p class="closing-note">Sprints is Phase 1. After the two weeks, the founding team that emerges goes into a 3-month residency to build the company. We'll talk about that later. For now, it's just sprints.</p>
-  </section>
+  <main class="deck sb-scroll" id="deck"></main>
 
+  <button class="sb-hint hint" id="hint" hidden>
+    <span id="hint-label"></span> <span class="sb-bounce arrow">↓</span>
+  </button>
 
-  <!-- Footer -->
-</div><!-- /page-wrap -->
+<script>
+(function () {
+  'use strict';
 
-  <!-- Footer — full width -->
-  <footer class="footer">
-    <span>© 2026 Seed to Fruit. Confidential. For review only.</span>
-    <span>seedtofruit.ca/sprints · main · v0.1.0</span>
-  </footer>
+  var REQUEST_URL = 'request.html';
 
-  <script>
-    // ── Tick strip ──
-    (function () {
-      const strip = document.getElementById('js-ticks');
-      for (let i = 0; i < 80; i++) {
-        const d = document.createElement('div');
-        d.className = 'tick ' + (i % 10 === 0 ? 'tick--major' : i % 5 === 0 ? 'tick--mid' : 'tick--minor');
-        strip.appendChild(d);
+  /* ───────────────────────────────────────────────────────────────
+     DATA — everything the page renders comes from this block.
+
+     `phase` drives which panel treatment a cohort gets:
+       'open'    — accepting applications, shows the join CTA
+       'wrapped' — finished, shows outcome / founders / room / posts
+
+     Anything still unknown is left null. The renderers fall back to
+     the designed `[ ... ]` empty state rather than inventing copy,
+     so it is safe to ship with gaps and fill them in as they land.
+     ─────────────────────────────────────────────────────────────── */
+  var SPRINTS = [
+    {
+      code: 'cohort_02',
+      phase: 'open',
+      partner: 'Maien Hamed',
+      credential: '17 yrs · ex-Meta Reality Labs · PhD, computational mechanics',
+      space: 'Spatial AI',
+      title: 'Simulation Copilot',
+      round: 'Round 02 on this problem',
+      continues: 'cohort_01',
+      oneLine: 'Turn informal engineering intent into explicit, spatially grounded simulation.',
+      problem: 'Engineers still hand-translate what they mean into solver input. Two weeks to build a solver-neutral layer that reads natural language, clicks, and annotated screenshots, resolves them to explicit CAD faces and nodes, shows its interpretation in 3D for correction, and exports a solver-ready script.',
+      question: 'Can a multimodal model reliably translate informal engineering instructions and visual references into explicit, spatially grounded simulation entities?',
+      ships: [
+        'Natural language → grounded loads and constraints',
+        'Click and annotated-screenshot grounding onto 3D entities',
+        'A solver-neutral simulation-intent schema',
+        'One solver export adapter'
+      ],
+      dates: 'Dates TBC · 2026',
+      location: 'Remote-first',
+      team: '8–12 in the room',
+      status: 'OPEN', statusNote: 'accepting applications',
+      img: 'maien-portrait.png', imgPos: '90% top', imgFit: 'auto 84%'
+    },
+    {
+      code: 'cohort_01',
+      phase: 'wrapped',
+      partner: 'Maien Hamed',
+      credential: '17 yrs · ex-Meta Reality Labs · PhD, computational mechanics',
+      space: 'Spatial AI',
+      title: 'Simulation Copilot',
+      round: 'Round 01 on this problem',
+      dates: 'Dates TBC · 2026',
+      location: 'Remote-first',
+      team: '6 in the room',
+      status: 'WRAPPED', statusNote: 'sprint complete',
+      img: 'maien-portrait.png', imgPos: '90% top', imgFit: 'auto 84%',
+
+      // Same problem the open sprint continues — stated, not claimed:
+      // this describes what the room took on, not what it concluded.
+      problem: 'Engineers describe loads and boundary conditions in words, sketches, and screenshots — then hand-translate all of it into solver input. Cohort 01 spent two weeks on whether that informal intent can be resolved automatically into explicit, spatially grounded simulation entities.',
+
+      // Company is deliberately unannounced — the empty state stands in.
+      company: null,      // { name, line, what, stage }
+
+      // The two who continued out of the room.
+      founders: [
+        { name: 'Ahmed', li: 'https://www.linkedin.com/in/jrhoss/', img: 'ahmed.jpg' },
+        { name: 'Fady' }
+      ],
+
+      // Roles are intentionally blank: LinkedIn blocks automated reads
+      // (HTTP 999), so nothing here is guessed. Add `role` for a second
+      // line, `img` to swap the initials circle for a portrait.
+      room: [
+        { name: 'Islam Alaa',  li: 'https://www.linkedin.com/in/islamalaa/',            img: 'islam-alaa.png' },
+        { name: 'Rajat Arora', li: 'https://www.linkedin.com/in/rajat-arora-3a1a48161/', img: 'rajat-arora.jpg' },
+        { name: 'Rohan Doshi', li: 'https://www.linkedin.com/in/rd-rohan-doshi/',        img: 'rohan-doshi.jpg' },
+        { name: 'Dan Mehta',   li: 'https://www.linkedin.com/in/dan-mehta/',             img: 'dan-mehta.jpg' },
+        { name: 'Ahmed',       li: 'https://www.linkedin.com/in/jrhoss/',                img: 'ahmed.jpg' },
+        { name: 'Fady' }
+      ],
+
+      // Updates pulled for now — the section hides itself when null.
+      posts: null
+    }
+  ];
+
+  // The rail. Maien first, then the cohort_01 room.
+  // Cards without a photo keep the designed striped empty state, and
+  // the achievement line only renders once a portrait exists.
+  // `line` only renders once a portrait exists — that is the designed
+  // behaviour, so a card with a photo and no achievement line shows the
+  // name chip alone rather than an empty headline.
+  var BUILDERS = [
+    { name: 'Maien H.', sprint: 'Host · Spatial AI', img: 'maien-portrait.png', imgPos: '72% 18%' },
+    { name: 'Islam A.', sprint: 'Spatial AI', img: 'islam-alaa.png' },
+    { name: 'Rajat A.', sprint: 'Spatial AI', img: 'rajat-arora.jpg' },
+    { name: 'Rohan D.', sprint: 'Spatial AI', img: 'rohan-doshi.jpg' },
+    { name: 'Dan M.',   sprint: 'Spatial AI', img: 'dan-mehta.jpg' },
+    { name: 'Ahmed',    sprint: 'Spatial AI', img: 'ahmed.jpg' }
+    // Fady omitted until a portrait lands — he stays in the roster and
+    // the founders list, where the initials avatar is the designed state.
+  ];
+
+  var STEPS = [
+    ['01', 'A problem is chosen.', 'Seed to Fruit starts by picking something that is worth working on: an industry, a problem, or an idea. Something like "How homes get built", or "Teaching kids a second language". Real, specific, hard.'],
+    ['02', 'A room is assembled.', 'We try to find 8 to 12 people who are the most relevant to the problem, people who know the industry in and out, engineers who’ve been hacking on it, founders who tried and failed, designers who’ve been thinking about it for years.'],
+    ['03', 'Two weeks, remote.', 'Conditions designed and engineered for something to emerge. The Host anchors judgment. Everyone works on the problem together, no pitches, no demo days, just the work.'],
+    ['04', 'A founding team is selected.', 'At the end, Seed to Fruit and the Host invite 3-5 of the strongest to form a company. Everyone else becomes a shareholder and part of the network around it.']
+  ];
+
+  var EQUITY = [['5%', 'Seed to Fruit'], ['5%', 'The Room'], ['5%', 'Partner']];
+
+  /* ── helpers ─────────────────────────────────────────────────── */
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function initials(name) {
+    return name.replace(/^@/, '').split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+  }
+  function pad(n) { return String(n).padStart(2, '0'); }
+  // Open sprints read green; a wrapped one is stated in the ink colour.
+  function statusColor(s) { return s.phase === 'wrapped' ? 'var(--ink-soft)' : 'var(--green)'; }
+  var OPEN = SPRINTS.filter(function (s) { return s.phase === 'open'; });
+  // Panel index for a sprint code, so panels can cross-link by code.
+  function panelIndexOf(code) {
+    var i = SPRINTS.findIndex(function (s) { return s.code === code; });
+    return i < 0 ? -1 : INTRO + i;
+  }
+  // The designed empty state for copy that has not landed yet.
+  function tbc(what) { return '<div class="tbc">[ ' + esc(what) + ' ]</div>'; }
+
+  /* ── panel model ─────────────────────────────────────────────── */
+  var INTRO = 3; // hero, thesis, the room
+  var PANELS = [
+    { type: 'hero',   label: 'Sprints' },
+    { type: 'thesis', label: 'Thesis' },
+    { type: 'room',   label: 'The room' }
+  ].concat(SPRINTS.map(function (s, i) {
+    return {
+      type: 'sprint', sprint: s, index: i,
+      label: s.phase === 'wrapped' ? 'Cohort 01 · wrapped' : 'The cohort'
+    };
+  })).concat([
+    { type: 'equity', label: 'Equity' },
+    { type: 'why1',   label: 'Why Sprints' },
+    { type: 'why2',   label: 'Why Sprints' },
+    { type: 'how',    label: 'How it works' }
+  ]);
+
+  var JUMP = {
+    room:   2,
+    cohort: INTRO,
+    equity: INTRO + SPRINTS.length,
+    why:    INTRO + SPRINTS.length + 1,
+    how:    INTRO + SPRINTS.length + 3
+  };
+
+  /* ── renderers ───────────────────────────────────────────────── */
+  function heroPanel() {
+    var wrapped = SPRINTS.length - OPEN.length;
+    var links = [
+      ['00', 'the room', JUMP.room],
+      ['01', 'the cohort', JUMP.cohort],
+      ['02', 'equity', JUMP.equity],
+      ['03', 'why sprints', JUMP.why],
+      ['04', 'how it works', JUMP.how]
+    ].map(function (l) {
+      return '<button class="sb-key" data-go="' + l[2] + '">' +
+        '<span class="sb-kl">' + l[1] + '</span>' +
+        '<span class="sb-ks"> : </span>' +
+        '<span class="sb-kv">' + l[0] + ' →</span></button>';
+    }).join('');
+
+    return '<div class="hero">' +
+      '<div class="eyebrow hero__eyebrow"># README · Sprints — by Seed to Fruit</div>' +
+      '<div class="hero__wordmark"><h1>SPRINTS</h1><span class="hero__mark"></span></div>' +
+      '<p class="hero__lede"><span class="caret">&gt;</span>an experiment in assembling companies, by Seed to Fruit</p>' +
+      '<div class="hero__counts">' +
+        '<span><b>' + pad(OPEN.length) + '</b> open sprint' + (OPEN.length === 1 ? '' : 's') + '</span>' +
+        '<span class="sep">·</span>' +
+        '<span><b>' + pad(wrapped) + '</b> wrapped</span>' +
+      '</div>' +
+      '<div class="hero__jump">' + links + '</div>' +
+    '</div>';
+  }
+
+  function thesisPanel() {
+    return '<div class="thesis">' +
+      '<div class="eyebrow"># Thesis</div>' +
+      '<p>Sprints brings together 8–12 people who’ve spent years inside a problem. ' +
+      'Two weeks of intensive work, and everyone in the room owns a piece of what gets built.</p>' +
+    '</div>';
+  }
+
+  function builderCard(b) {
+    var filled = !!b.img;
+    var visual = filled
+      ? '<div class="bld__photo" style="background-image:url(&quot;' + esc(b.img) + '&quot;);background-position:' + esc(b.imgPos || 'center 12%') + '"></div>' +
+        '<div class="bld__scrim"></div>'
+      : '<div class="bld__placeholder"></div>';
+    var text = '<div class="bld__chip"><span class="dot">●</span>' + esc(b.name) + '</div>' +
+      (filled
+        ? (b.line ? '<div class="bld__line">' + esc(b.line) + '</div>' : '') +
+          '<div class="bld__sprint">' + esc(b.sprint) + '</div>'
+        : '');
+    return '<div class="bld' + (filled ? ' bld--filled' : '') + '" data-filled="' + (filled ? '1' : '') + '">' +
+      '<div class="bld__frame">' + visual + '<div class="bld__text">' + text + '</div></div>' +
+    '</div>';
+  }
+
+  function roomPanel() {
+    return '<div class="room">' +
+      '<div class="head eyebrow"><span># 00 · The room</span></div>' +
+      '<h2>Builders only</h2>' +
+      '<p class="prose room__sub">Come to solve a hard problem, work without permission, and ship something you’d put your name on. Sounds intense? It is.</p>' +
+      '<button class="btn-solid" data-go="' + JUMP.cohort + '">See the open sprint' + (OPEN.length === 1 ? '' : 's') + ' →</button>' +
+      '<div class="rail" id="rail">' + BUILDERS.map(builderCard).join('') + '</div>' +
+    '</div>';
+  }
+
+  function metaGrid(s) {
+    var html = [['dates', s.dates], ['place', s.location], ['team', s.team]].map(function (r) {
+      return '<div><span class="label">' + r[0] + '</span><span class="val">' + esc(r[1]) + '</span></div>';
+    }).join('');
+    html += '<div><span class="label">status</span><span class="val" style="color:' + statusColor(s) + '">● ' +
+      esc(s.status) + ' · ' + esc(s.statusNote) + '</span></div>';
+    return '<div class="metagrid">' + html + '</div>';
+  }
+
+  // `role` is optional — the second line is dropped rather than faked.
+  function roster(people) {
+    return '<div class="roster">' + people.map(function (m) {
+      return '<div class="roster__row">' +
+        (m.img
+          ? '<span class="avatar avatar--photo" style="background-image:url(&quot;' + esc(m.img) + '&quot;)' +
+            (m.imgPos ? ';background-position:' + esc(m.imgPos) : '') + '"></span>'
+          : '<span class="avatar' + (m.pending ? ' avatar--pending' : '') + '">' + esc(initials(m.name)) + '</span>') +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="roster__name">' + esc(m.name) + '</div>' +
+          (m.role ? '<div class="roster__role">' + esc(m.role) + '</div>' : '') +
+        '</div>' +
+        (m.li ? '<a class="roster__li" href="' + esc(m.li) + '" target="_blank" rel="noopener" aria-label="' + esc(m.name) + ' on LinkedIn">in →</a>' : '') +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  function plusList(items) {
+    return '<div class="plus-list">' + items.map(function (b) {
+      return '<div><span class="plus">+</span><span>' + esc(b) + '</span></div>';
+    }).join('') + '</div>';
+  }
+
+  function feed(s) {
+    return '<div class="feed">' + s.posts.map(function (p, i) {
+      var parts = p.when.split('·');
+      return '<div class="feed__item sb-feedin" style="animation-delay:' + (i * 90) + 'ms">' +
+        '<div class="feed__rail"><span class="feed__node"></span>' +
+          (i < s.posts.length - 1 ? '<span class="feed__stem"></span>' : '') +
+        '</div>' +
+        '<div>' +
+          '<div class="feed__when"><b>' + esc((parts[0] || '').trim()) + '</b>&nbsp;&nbsp;·&nbsp;&nbsp;' + esc((parts[1] || '').trim()) + '</div>' +
+          '<div class="feed__title">' + esc(p.title) + '</div>' +
+          '<div class="feed__body">' + esc(p.body) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  function companyBlock(c) {
+    return '<div class="sponsor-strip">' +
+      '<div class="label sponsor-strip__label">Company formed</div>' +
+      '<div class="sponsor-strip__row">' +
+        '<div class="sponsor-strip__mark">' + esc(initials(c.name)) + '</div>' +
+        '<div>' +
+          '<div class="sponsor-strip__name">' + esc(c.name) + '</div>' +
+          (c.stage ? '<div class="sponsor-strip__kind">' + esc(c.stage) + '</div>' : '') +
+        '</div>' +
+      '</div>' +
+      (c.line ? '<div class="sprint__nowbuilding" style="max-width:40ch">' + esc(c.line) + '</div>' : '') +
+      (c.what ? '<p class="prose sprint__problem" style="margin-top:12px">' + esc(c.what) + '</p>' : '') +
+    '</div>';
+  }
+
+  function sprintPanel(s) {
+    var wrapped = s.phase === 'wrapped';
+
+    var visual = s.img
+      ? '<div class="sprint__photo" style="background-image:url(&quot;' + esc(s.img) + '&quot;);background-position:' + esc(s.imgPos || 'center') +
+        (s.imgFit ? ';--img-fit:' + esc(s.imgFit) : '') + '"></div>'
+      : '<div class="sprint__placeholder">' +
+          '<div class="sprint__initials">' + esc(initials(s.partner)) + '</div>' +
+          '<div class="sprint__ph-note">[ partner portrait ]</div>' +
+          '<div class="sprint__ph-name">' + esc(s.partner) + '</div>' +
+        '</div>';
+
+    var overlay = '<div class="sprint__overlay">' +
+      '<div class="sprint__head">' +
+        '<span style="color:var(--accent)"># 01 · The cohort</span>' +
+        '<span class="code">// ' + esc(s.code) + (wrapped ? ' · wrapped' : '') + '</span>' +
+      '</div>' +
+      '<div class="sprint__space">' + esc(s.title || s.space) + '</div>' +
+      (s.title
+        ? '<div class="sprint__spacetag">' + esc(s.space) +
+          (s.round ? '<span class="sep">·</span>' + esc(s.round) : '') + '</div>'
+        : '') +
+      '<div class="sprint__partner">' + esc(s.partner) + '</div>' +
+      '<div class="sprint__credential">' + esc(s.credential) + '</div>' +
+      (wrapped
+        ? '<div class="sprint__progress-pill sprint__progress-pill--done"><span class="dot">●</span>' +
+          'Wrapped · cohort 01 complete</div>'
+        : '') +
+    '</div>';
+
+    var info = wrapped ? wrappedInfo(s) : openInfo(s);
+
+    return '<div class="sprint">' +
+      '<div class="sprint__visual">' + visual + '<div class="sprint__scrim"></div>' + overlay + '</div>' +
+      '<div class="sprint__info sb-scroll' + (wrapped ? ' sprint__info--building' : '') + '">' + info + '</div>' +
+    '</div>';
+  }
+
+  // An open sprint: the pitch, then the ask.
+  function openInfo(s) {
+    var prior = s.continues ? panelIndexOf(s.continues) : -1;
+    return '<div class="head eyebrow"><span># 01 · The cohort</span></div>' +
+      '<div class="sprint__oneline">' + esc(s.oneLine) + '</div>' +
+      (prior >= 0
+        ? '<button class="xref" data-go="' + prior + '">' +
+          'Cohort 01 ran on this problem — see what the room built <span>→</span></button>'
+        : '') +
+      '<div class="block block--problem">' +
+        '<span class="label block__label">The problem</span>' +
+        '<p class="sprint__problem">' + esc(s.problem) + '</p>' +
+      '</div>' +
+      (s.question
+        ? '<div class="question"><span class="label block__label">The question</span>' +
+          '<p class="question__body">' + esc(s.question) + '</p></div>'
+        : '') +
+      (s.ships
+        ? '<div class="block"><span class="label block__label">What ships in two weeks</span>' + plusList(s.ships) + '</div>'
+        : '') +
+      metaGrid(s) +
+      '<div style="margin-top:4px"><a class="btn-solid" href="' + REQUEST_URL + '">Request to join <span>→</span></a></div>';
+  }
+
+  // A wrapped sprint: the outcome, then the people who made it.
+  function wrappedInfo(s) {
+    var next = OPEN.length ? panelIndexOf(OPEN[0].code) : -1;
+    return (next >= 0
+        ? '<button class="xref" data-go="' + next + '">' +
+          'A second room is forming on this problem <span>→</span></button>'
+        : '') +
+      '<div>' +
+        '<div class="label" style="margin-bottom:13px">Outcome</div>' +
+        (s.company ? companyBlock(s.company) : tbc('company to be announced')) +
+      '</div>' +
+      '<div class="block"><div class="block__head"><span>The problem they worked on</span></div>' +
+        (s.problem ? '<p class="sprint__problem">' + esc(s.problem) + '</p>' : tbc('problem write-up pending')) +
+      '</div>' +
+      '<div class="block"><div class="block__head"><span>The founders</span></div>' +
+        (s.founders ? roster(s.founders) : tbc('founding team to be announced')) +
+      '</div>' +
+      '<div class="block"><div class="block__head"><span>The room</span><span>' + s.room.length + ' builders</span></div>' +
+        roster(s.room) +
+      '</div>' +
+      (s.posts
+        ? '<div class="block"><div class="block__head"><span>From the room</span></div>' + feed(s) + '</div>'
+        : '') +
+      metaGrid(s);
+  }
+
+  function equityPanel() {
+    var rows = EQUITY.map(function (r) {
+      return '<div><div class="n">' + r[0] + '</div><div class="l">' + r[1] + '</div></div>';
+    }).join('');
+    return '<div class="equity">' +
+      '<div class="head eyebrow"><span># 02 · Equity</span></div>' +
+      '<div class="equity__figure"><span class="n">85</span><span class="pct">%</span></div>' +
+      '<h2>of every company goes to the founders who continue. The rest is held for the room.</h2>' +
+      '<div class="equity__rows">' + rows +
+        '<div class="equity__note"><p class="prose">Equity only activates if a company forms. If no team continues, the whole thing dissolves — but if 2–3 people commit, everyone in that room owns a piece.</p></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function whyMathPanel() {
+    return '<div class="why">' +
+      '<div class="head head--center eyebrow"><span># 03 · Why Sprints</span></div>' +
+      '<div class="why__stat">99%</div>' +
+      '<h2>of startups will fail.</h2>' +
+      '<p class="prose why__body">Everyone says that most startups fail, and that’s just the startup math. But is it? Or is it the predictable result of a specific way of assembling companies that almost nobody questions? We built Sprints to test that. It’s an experiment in assembling companies.</p>' +
+    '</div>';
+  }
+
+  function whyBetPanel() {
+    return '<div class="why why--bet">' +
+      '<div class="head head--center eyebrow"><span># 03 · Why Sprints</span></div>' +
+      '<h2>Right problem, right people, right time.</h2>' +
+      '<p class="prose why__body">Almost everything else is secondary. Most accelerators will waste your time on: workshops, panels, pitch nights, and events. But the real work is in choosing the right problem, finding the right people, at the right time, and creating the conditions where a real company can emerge.</p>' +
+    '</div>';
+  }
+
+  function howPanel() {
+    return '<div class="how">' +
+      '<div class="head eyebrow"><span># 04 · How it works</span></div>' +
+      '<div>' + STEPS.map(function (s) {
+        return '<div class="step">' +
+          '<span class="step__ghost">' + s[0] + '</span>' +
+          '<div class="step__body"><h3>' + esc(s[1]) + '</h3><p class="prose">' + esc(s[2]) + '</p></div>' +
+        '</div>';
+      }).join('') + '</div>' +
+      '<footer class="footer">' +
+        '<span>© 2026 Seed to Fruit. All rights reserved.</span>' +
+        '<span>seedtofruit.ca/sprints · main · v0.1.0</span>' +
+      '</footer>' +
+    '</div>';
+  }
+
+  function renderPanel(p) {
+    switch (p.type) {
+      case 'hero':   return heroPanel();
+      case 'thesis': return thesisPanel();
+      case 'room':   return roomPanel();
+      case 'sprint': return sprintPanel(p.sprint);
+      case 'equity': return equityPanel();
+      case 'why1':   return whyMathPanel();
+      case 'why2':   return whyBetPanel();
+      case 'how':    return howPanel();
+    }
+    return '';
+  }
+
+  /* ── mount ───────────────────────────────────────────────────── */
+  var deck = document.getElementById('deck');
+  deck.innerHTML = PANELS.map(function (p, i) {
+    return '<section class="panel" data-panel data-i="' + i + '" aria-label="' + esc(p.label) + '">' +
+      renderPanel(p) + '</section>';
+  }).join('');
+
+  var dotnav = document.getElementById('dotnav');
+  dotnav.innerHTML = PANELS.map(function (p, i) {
+    return '<button data-go="' + i + '"' + (p.type === 'sprint' ? ' data-sprint' : '') +
+      ' aria-label="' + esc(p.type === 'sprint' ? 'Sprint ' + p.sprint.code : p.label) + '"><span></span></button>';
+  }).join('');
+
+  function isStacked() { return window.matchMedia('(max-width: 900px)').matches; }
+  function prefersReduced() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+
+  /* Jumping more than one panel needs snapping off for the duration:
+     `scroll-snap-stop: always` forbids passing a snap point, so a
+     scripted multi-panel scroll would stop at the first one it meets.
+     Snap is restored on scrollend, with a timeout fallback. */
+  var snapRestore = null;
+  function releaseSnap() {
+    clearTimeout(snapRestore);
+    snapRestore = setTimeout(function () { deck.classList.remove('is-jumping'); }, 1000);
+  }
+  deck.addEventListener('scrollend', function () {
+    clearTimeout(snapRestore);
+    deck.classList.remove('is-jumping');
+  });
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(PANELS.length - 1, i));
+    var el = deck.querySelector('[data-i="' + i + '"]');
+    if (!el) return;
+    var smooth = prefersReduced() ? 'auto' : 'smooth';
+    if (isStacked()) { el.scrollIntoView({ behavior: smooth, block: 'start' }); return; }
+    deck.classList.add('is-jumping');
+    deck.scrollTo({ top: el.offsetTop, behavior: smooth });
+    releaseSnap();
+  }
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-go]');
+    if (t) { e.preventDefault(); goTo(Number(t.dataset.go)); }
+  });
+
+  /* ── active panel: top bar counter, dot nav, scroll hint ─────── */
+  var topbarRight = document.getElementById('topbar-right');
+  var hint = document.getElementById('hint');
+  var hintLabel = document.getElementById('hint-label');
+  var active = -1;
+
+  function setActive(i) {
+    if (i === active) return;
+    active = i;
+    var p = PANELS[i];
+
+    Array.prototype.forEach.call(dotnav.children, function (b, n) {
+      b.setAttribute('aria-current', n === i ? 'true' : 'false');
+    });
+
+    topbarRight.innerHTML = p.type === 'sprint'
+      ? (p.sprint.phase === 'wrapped'
+          ? '<span class="count-of">cohort 01 · wrapped</span>'
+          : '<span class="count">' + pad(OPEN.indexOf(p.sprint) + 1) + '</span>' +
+            '<span class="count-of">— ' + pad(OPEN.length) + ' open sprint' + (OPEN.length === 1 ? '' : 's') + '</span>')
+      : '';
+
+    if (i < PANELS.length - 1) {
+      hint.hidden = false;
+      hintLabel.textContent = PANELS[i + 1].label;
+    } else {
+      hint.hidden = true;
+    }
+  }
+
+  hint.addEventListener('click', function () { goTo(active + 1); });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) setActive(Number(e.target.dataset.i));
+    });
+  }, { root: isStacked() ? null : deck, threshold: 0.55 });
+  deck.querySelectorAll('[data-panel]').forEach(function (el) { io.observe(el); });
+  setActive(0);
+
+  /* ── keyboard: arrows / page up-down step panels ─────────────── */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.matches('input, textarea, select')) return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goTo(active + 1); }
+    else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); goTo(active - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(PANELS.length - 1); }
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     Builders rail — GPU-composited transforms only (no per-frame
+     backdrop-filter). Lays out on mount rather than on the first
+     animation frame. Hover pauses, pointer drag scrubs, ~22s loop.
+     ───────────────────────────────────────────────────────────── */
+  (function buildRail() {
+    var el = document.getElementById('rail');
+    if (!el) return;
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var cards = Array.prototype.slice.call(el.querySelectorAll('.bld'));
+    var texts = cards.map(function (c) { return c.querySelector('.bld__text'); });
+    var N = cards.length;
+    var half = N / 2;
+    var DRIFT = 0.16; // card-units per second — ~22s for a full nine-card loop
+    var cw = 268, step = cw * 0.94;
+    var st = { pos: 0, speed: 0, target: DRIFT, last: 0, raf: 0, drag: null };
+
+    function scaleFor(d) { var a = Math.abs(d); return Math.max(0.42, 1 - 0.22 * a + 0.014 * a * a); }
+    function opacityFor(d) { var a = Math.abs(d); return a < 1 ? 1 : Math.max(0, 1 - (a - 1) * 0.42); }
+    function textOpacityFor(d) { return Math.max(0, Math.min(1, 1.6 - Math.abs(d))); }
+
+    /* Card width is driven by the height the rail actually has, so the fan
+       fills the panel instead of leaving dead space under it. 0.68 is the
+       card aspect; the 0.94 leaves a little breathing room top and bottom. */
+    function fit() {
+      var railH = el.clientHeight || window.innerHeight * 0.4;
+      cw = Math.max(150, Math.min(400, window.innerWidth * 0.26, railH * 0.68 * 0.94));
+      step = cw * 0.94;
+      el.style.setProperty('--bld-cw', cw + 'px');
+    }
+
+    function apply() {
+      for (var i = 0; i < N; i++) {
+        var d = ((i - st.pos) % N + N) % N;
+        if (d > half) d -= N;
+        var card = cards[i];
+        var s = scaleFor(d), o = opacityFor(d);
+        card.style.transform = 'translate(-50%, -50%) translate3d(' + (d * step).toFixed(2) + 'px, 0, 0) scale(' + s.toFixed(4) + ')';
+        var op = o.toFixed(3);
+        if (card.dataset.op !== op) { card.style.opacity = op; card.dataset.op = op; }
+        var z = String(100 - Math.round(Math.abs(d) * 10));
+        if (card.dataset.z !== z) { card.style.zIndex = z; card.dataset.z = z; }
+        var vis = o <= 0.01 ? 'hidden' : 'visible';
+        if (card.dataset.vis !== vis) { card.style.visibility = vis; card.dataset.vis = vis; }
+        var txt = texts[i];
+        if (txt) {
+          var base = textOpacityFor(d);
+          var to = (card.dataset.filled ? base : Math.min(1, base + 0.3)).toFixed(3);
+          if (txt.dataset.to !== to) { txt.style.opacity = to; txt.dataset.to = to; }
+        }
       }
-    })();
+    }
 
-    // ── Live date ──
-    (function () {
-      const el = document.getElementById('js-date');
-      const now = new Date();
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const d = String(now.getDate()).padStart(2, '0');
-      el.textContent = `${y}-${m}-${d}`;
-    })();
+    function tick(now) {
+      var dt = Math.min(0.05, (now - st.last) / 1000);
+      st.last = now;
+      st.speed += (st.target - st.speed) * Math.min(1, dt * 4);
+      if (!st.drag) st.pos += st.speed * dt;
+      apply();
+      st.raf = requestAnimationFrame(tick);
+    }
 
+    function reset() {
+      cards.forEach(function (c) {
+        c.style.transform = ''; c.style.opacity = ''; c.style.visibility = ''; c.style.zIndex = '';
+        delete c.dataset.op; delete c.dataset.z; delete c.dataset.vis;
+      });
+      texts.forEach(function (t) { if (t) { t.style.opacity = ''; delete t.dataset.to; } });
+    }
 
-  </script>
+    function start() {
+      cancelAnimationFrame(st.raf);
+      st.raf = 0;
+      if (isStacked() || reduce.matches) { reset(); return; }
+      fit();
+      apply(); // lay the fan out at first paint, independent of rAF timing
+      st.last = performance.now();
+      st.raf = requestAnimationFrame(tick);
+    }
+
+    el.addEventListener('pointerenter', function () { st.target = 0; });
+    el.addEventListener('pointerleave', function () { st.target = DRIFT; });
+    el.addEventListener('pointerdown', function (e) {
+      if (isStacked() || reduce.matches) return;
+      st.drag = { x: e.clientX, pos: st.pos };
+      el.setPointerCapture(e.pointerId);
+      el.classList.add('is-dragging');
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (st.drag) st.pos = st.drag.pos - (e.clientX - st.drag.x) / step;
+    });
+    ['pointerup', 'pointercancel'].forEach(function (ev) {
+      el.addEventListener(ev, function () { st.drag = null; el.classList.remove('is-dragging'); });
+    });
+
+    window.addEventListener('resize', start);
+    if (reduce.addEventListener) reduce.addEventListener('change', start);
+    start();
+  })();
+})();
+</script>
 </body>
 </html>
