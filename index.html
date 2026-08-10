@@ -279,7 +279,6 @@
       font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .2em;
       text-transform: uppercase; margin-bottom: 22px; display: flex; gap: 2.4em; flex-wrap: wrap;
     }
-    .sprint__head .code { color: var(--overlay-soft); }
     .sprint__space {
       font-family: var(--display); font-size: clamp(40px,4.4vw,70px); font-weight: 700;
       line-height: .94; letter-spacing: -0.04em; color: var(--overlay-ink); margin-bottom: 20px;
@@ -908,7 +907,6 @@
     var overlay = '<div class="sprint__overlay">' +
       '<div class="sprint__head">' +
         '<span style="color:var(--accent)"># 01 · The cohort</span>' +
-        '<span class="code">// ' + esc(s.code) + (wrapped ? ' · wrapped' : '') + '</span>' +
       '</div>' +
       '<div class="sprint__space">' + esc(s.title || s.space) + '</div>' +
       (s.title
