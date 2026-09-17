@@ -315,6 +315,20 @@
     .xref span { color: var(--accent); transition: transform 150ms ease; display: inline-block; }
     .xref:hover { color: var(--accent); }
     .xref:hover span { transform: translateX(4px); }
+    /* Pointing at something currently open — carries the live accent,
+       with a pulsing dot, rather than sitting back in the muted tone. */
+    .xref--live { color: var(--accent); font-weight: 500; }
+    .xref--live::before {
+      content: "●"; color: var(--accent); font-size: 9px;
+      animation: sbPulse 1.4s ease-in-out infinite;
+    }
+
+    /* First block in a column already sits under a rule — drop its own. */
+    .block--flush { border-top: none; padding-top: 4px; }
+
+    /* Company URL on the wrapped overlay. */
+    .sprint__link { color: var(--overlay-ink); text-decoration: none; border-bottom: 1px solid rgba(244,240,230,0.4); transition: color 150ms ease, border-color 150ms ease; }
+    .sprint__link:hover { color: var(--accent); border-color: var(--accent); }
 
     .sponsor-lockup { display: flex; align-items: center; gap: 12px; }
     .sponsor-lockup__mark {
@@ -410,16 +424,34 @@
     }
     .sponsor-strip__name { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--ink); }
     .sponsor-strip__kind { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .02em; }
-    .plus-list { display: flex; flex-direction: column; gap: 8px; }
-    .plus-list div { display: flex; gap: 11px; align-items: baseline; font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
-    .plus-list .plus { color: var(--accent); }
-
-    /* The sprint's research question — the one pull-quote on the page. */
-    .question { border-left: 2px solid var(--accent); padding-left: 20px; }
-    .question__body {
-      font-family: var(--display); font-weight: 600; font-size: clamp(16px, 1.5vw, 20px);
-      line-height: 1.35; letter-spacing: -0.015em; color: var(--ink); text-wrap: pretty; max-width: 44ch;
+    /* Outcome, before the company is announced. Same lockup geometry as
+       .sponsor-strip so the block does not reflow when the name lands —
+       the name itself is redacted rather than replaced by a dashed box. */
+    .co-pending {
+      border: 1px solid var(--line); border-radius: 3px;
+      background: var(--soft-fill); padding: 18px 18px 0;
     }
+    .co-pending__row { display: flex; align-items: center; gap: 13px; padding-bottom: 16px; }
+    .co-pending__mark {
+      width: 48px; height: 48px; border-radius: 2px; flex: 0 0 48px;
+      background: var(--img-base); border: 1px solid var(--line);
+      background-image: repeating-linear-gradient(135deg, var(--img-stripe) 0 1.5px, transparent 1.5px 9px);
+    }
+    /* Two bars, sized like a two-word name, on the baseline the real
+       company name will occupy. */
+    .co-pending__redact { display: flex; gap: 7px; margin-bottom: 8px; }
+    .co-pending__redact span {
+      height: 13px; border-radius: 1.5px;
+      background: repeating-linear-gradient(135deg, rgba(236,232,222,0.30) 0 2px, rgba(236,232,222,0.12) 2px 6px);
+    }
+    .co-pending__redact span:first-child { width: 84px; }
+    .co-pending__redact span:last-child  { width: 46px; }
+    .co-pending__kind { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .02em; }
+    .co-pending__foot {
+      border-top: 1px solid var(--line-soft); padding: 12px 0 14px;
+      font-family: var(--mono); font-size: 11px; color: var(--muted-soft); letter-spacing: .02em;
+    }
+    .co-pending__foot::before { content: "● "; color: var(--accent); font-size: 8px; vertical-align: 2px; }
 
     /* Designed empty state for copy that has not landed yet. */
     .tbc {
@@ -659,21 +691,13 @@
       credential: '17 yrs · ex-Meta Reality Labs · PhD, computational mechanics',
       space: 'Spatial AI',
       title: 'Simulation Copilot',
-      round: 'Round 02 on this problem',
       continues: 'cohort_01',
       oneLine: 'Turn informal engineering intent into explicit, spatially grounded simulation.',
-      problem: 'Engineers still hand-translate what they mean into solver input. Two weeks to build a solver-neutral layer that reads natural language, clicks, and annotated screenshots, resolves them to explicit CAD faces and nodes, shows its interpretation in 3D for correction, and exports a solver-ready script.',
-      question: 'Can a multimodal model reliably translate informal engineering instructions and visual references into explicit, spatially grounded simulation entities?',
-      ships: [
-        'Natural language → grounded loads and constraints',
-        'Click and annotated-screenshot grounding onto 3D entities',
-        'A solver-neutral simulation-intent schema',
-        'One solver export adapter'
-      ],
+      problem: 'Engineers still hand-translate what they mean into solver input. Two weeks to turn plain language and annotated screenshots into explicit CAD faces, loads, and a solver-ready script.',
       dates: 'Dates TBC · 2026',
       location: 'Remote-first',
       team: '8–12 in the room',
-      status: 'OPEN', statusNote: 'accepting applications',
+      status: 'OPEN', statusNote: null,
       img: 'maien-portrait.png', imgPos: '90% top', imgFit: 'auto 84%'
     },
     {
@@ -683,23 +707,27 @@
       credential: '17 yrs · ex-Meta Reality Labs · PhD, computational mechanics',
       space: 'Spatial AI',
       title: 'Simulation Copilot',
-      round: 'Round 01 on this problem',
       dates: 'Dates TBC · 2026',
       location: 'Remote-first',
-      team: '6 in the room',
+      team: '7 in the room',
       status: 'WRAPPED', statusNote: 'sprint complete',
-      img: 'maien-portrait.png', imgPos: '90% top', imgFit: 'auto 84%',
 
-      // Same problem the open sprint continues — stated, not claimed:
-      // this describes what the room took on, not what it concluded.
-      problem: 'Engineers describe loads and boundary conditions in words, sketches, and screenshots — then hand-translate all of it into solver input. Cohort 01 spent two weeks on whether that informal intent can be resolved automatically into explicit, spatially grounded simulation entities.',
+      // A wrapped sprint leads with a founder, not the partner — the
+      // caption names whoever is in this photo, so swap both together.
+      // Same 1448x1086 studio frame as Maien's, so it takes the same
+      // partial-fit treatment; he sits left of centre, hence 32%.
+      img: 'ahmed.png', imgPos: '32% top', imgFit: 'auto 84%',
+
+      // The problem lives on the open sprint panel; repeating it here
+      // read as redundant, so it is stated once, not twice.
 
       // Company is deliberately unannounced — the empty state stands in.
-      company: null,      // { name, line, what, stage }
+      // Fill { name, url } and the overlay headline and link fill in too.
+      company: null,      // { name, url, line, what, stage }
 
       // The two who continued out of the room.
       founders: [
-        { name: 'Ahmed', li: 'https://www.linkedin.com/in/jrhoss/', img: 'ahmed.jpg' },
+        { name: 'Ahmed', li: 'https://www.linkedin.com/in/jrhoss/', img: 'ahmed.png', imgPos: '38% 14%' },
         { name: 'Fady' }
       ],
 
@@ -707,11 +735,13 @@
       // (HTTP 999), so nothing here is guessed. Add `role` for a second
       // line, `img` to swap the initials circle for a portrait.
       room: [
+        // The partner is in the room too, and leads it — so he sits first.
+        { name: 'Maien Hamed', role: 'Partner', img: 'maien-portrait.png', imgPos: '72% 18%' },
         { name: 'Islam Alaa',  li: 'https://www.linkedin.com/in/islamalaa/',            img: 'islam-alaa.png' },
         { name: 'Rajat Arora', li: 'https://www.linkedin.com/in/rajat-arora-3a1a48161/', img: 'rajat-arora.jpg' },
         { name: 'Rohan Doshi', li: 'https://www.linkedin.com/in/rd-rohan-doshi/',        img: 'rohan-doshi.jpg' },
         { name: 'Dan Mehta',   li: 'https://www.linkedin.com/in/dan-mehta/',             img: 'dan-mehta.jpg' },
-        { name: 'Ahmed',       li: 'https://www.linkedin.com/in/jrhoss/',                img: 'ahmed.jpg' },
+        { name: 'Ahmed',       li: 'https://www.linkedin.com/in/jrhoss/',                img: 'ahmed.png', imgPos: '38% 14%' },
         { name: 'Fady' }
       ],
 
@@ -732,7 +762,7 @@
     { name: 'Rajat A.', sprint: 'Spatial AI', img: 'rajat-arora.jpg' },
     { name: 'Rohan D.', sprint: 'Spatial AI', img: 'rohan-doshi.jpg' },
     { name: 'Dan M.',   sprint: 'Spatial AI', img: 'dan-mehta.jpg' },
-    { name: 'Ahmed',    sprint: 'Spatial AI', img: 'ahmed.jpg' }
+    { name: 'Ahmed',    sprint: 'Spatial AI', img: 'ahmed.png', imgPos: '38% 8%' }
     // Fady omitted until a portrait lands — he stays in the roster and
     // the founders list, where the initials avatar is the designed state.
   ];
@@ -756,6 +786,10 @@
     return name.replace(/^@/, '').split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
   }
   function pad(n) { return String(n).padStart(2, '0'); }
+  // "cohort_02" -> "02". These panels are labelled by cohort number rather
+  // than by the page's section index, so the number on screen matches the
+  // cohort being described.
+  function cohortNo(s) { return (s.code.match(/(\d+)\s*$/) || [, '01'])[1]; }
   // Open sprints read green; a wrapped one is stated in the ink colour.
   function statusColor(s) { return s.phase === 'wrapped' ? 'var(--ink-soft)' : 'var(--green)'; }
   var OPEN = SPRINTS.filter(function (s) { return s.phase === 'open'; });
@@ -776,7 +810,7 @@
   ].concat(SPRINTS.map(function (s, i) {
     return {
       type: 'sprint', sprint: s, index: i,
-      label: s.phase === 'wrapped' ? 'Cohort 01 · wrapped' : 'The cohort'
+      label: 'Cohort ' + cohortNo(s) + (s.phase === 'wrapped' ? ' · wrapped' : ' · open')
     };
   })).concat([
     { type: 'equity', label: 'Equity' },
@@ -861,7 +895,7 @@
       return '<div><span class="label">' + r[0] + '</span><span class="val">' + esc(r[1]) + '</span></div>';
     }).join('');
     html += '<div><span class="label">status</span><span class="val" style="color:' + statusColor(s) + '">● ' +
-      esc(s.status) + ' · ' + esc(s.statusNote) + '</span></div>';
+      esc(s.status) + (s.statusNote ? ' · ' + esc(s.statusNote) : '') + '</span></div>';
     return '<div class="metagrid">' + html + '</div>';
   }
 
@@ -879,12 +913,6 @@
         '</div>' +
         (m.li ? '<a class="roster__li" href="' + esc(m.li) + '" target="_blank" rel="noopener" aria-label="' + esc(m.name) + ' on LinkedIn">in →</a>' : '') +
       '</div>';
-    }).join('') + '</div>';
-  }
-
-  function plusList(items) {
-    return '<div class="plus-list">' + items.map(function (b) {
-      return '<div><span class="plus">+</span><span>' + esc(b) + '</span></div>';
     }).join('') + '</div>';
   }
 
@@ -919,6 +947,31 @@
     '</div>';
   }
 
+  // The outcome of cohort_01 is not missing — a company formed, its name
+  // just isn't public yet. So this mirrors companyBlock's lockup with the
+  // name masked instead of showing a dashed 'to be announced' box: it
+  // reads as withheld rather than absent, and nothing shifts on the panel
+  // when the real name lands. Everything else on the card is fact the
+  // data already carries — the space, the cohort, how many continued.
+  function companyPending(s) {
+    var carried = s.founders ? s.founders.length : 0;
+    return '<div class="co-pending">' +
+      '<div class="co-pending__row">' +
+        '<div class="co-pending__mark" aria-hidden="true"></div>' +
+        '<div>' +
+          '<div class="co-pending__redact" role="img" aria-label="Company name not yet announced">' +
+            '<span></span><span></span>' +
+          '</div>' +
+          '<div class="co-pending__kind">' + esc(s.space) + ' · out of cohort ' + cohortNo(s) + '</div>' +
+        '</div>' +
+      '</div>' +
+      (carried
+        ? '<div class="co-pending__foot">' + carried + ' of ' + s.room.length +
+          ' in the room continued as founders</div>'
+        : '') +
+    '</div>';
+  }
+
   function sprintPanel(s) {
     var wrapped = s.phase === 'wrapped';
 
@@ -932,20 +985,23 @@
         '</div>';
 
     var overlay = '<div class="sprint__overlay">' +
-      '<div class="sprint__head">' +
-        '<span style="color:var(--accent)"># 01 · The cohort</span>' +
-      '</div>' +
-      '<div class="sprint__space">' + esc(s.title || s.space) + '</div>' +
-      (s.title
-        ? '<div class="sprint__spacetag">' + esc(s.space) +
-          (s.round ? '<span class="sep">·</span>' + esc(s.round) : '') + '</div>'
-        : '') +
-      '<div class="sprint__partner">' + esc(s.partner) + '</div>' +
-      '<div class="sprint__credential">' + esc(s.credential) + '</div>' +
+      // A wrapped sprint leads with what came out of it. Founder names and
+      // the announcement state both live in the right column, so they are
+      // not repeated here — only a real company URL earns a line.
       (wrapped
-        ? '<div class="sprint__progress-pill sprint__progress-pill--done"><span class="dot">●</span>' +
+        ? '<div class="sprint__space">' + esc((s.company && s.company.name) || 'Coming soon') + '</div>' +
+          '<div class="sprint__spacetag">Company formed<span class="sep">·</span>' + esc(s.space) + '</div>' +
+          (s.company && s.company.url
+            ? '<div class="sprint__credential">' +
+              '<a class="sprint__link" href="' + esc(s.company.url) + '" target="_blank" rel="noopener">' +
+              esc(s.company.url.replace(/^https?:\/\//, '')) + ' ↗</a></div>'
+            : '') +
+          '<div class="sprint__progress-pill sprint__progress-pill--done"><span class="dot">●</span>' +
           'Wrapped · cohort 01 complete</div>'
-        : '') +
+        : '<div class="sprint__space">' + esc(s.title || s.space) + '</div>' +
+          (s.title ? '<div class="sprint__spacetag">' + esc(s.space) + '</div>' : '') +
+          '<div class="sprint__partner">' + esc(s.partner) + '</div>' +
+          '<div class="sprint__credential">' + esc(s.credential) + '</div>') +
     '</div>';
 
     var info = wrapped ? wrappedInfo(s) : openInfo(s);
@@ -959,7 +1015,8 @@
   // An open sprint: the pitch, then the ask.
   function openInfo(s) {
     var prior = s.continues ? panelIndexOf(s.continues) : -1;
-    return '<div class="head eyebrow"><span># 01 · The cohort</span></div>' +
+    return '<div class="head eyebrow"><span># Cohort ' + cohortNo(s) + '</span>' +
+        '<span class="file">// open</span></div>' +
       '<div class="sprint__oneline">' + esc(s.oneLine) + '</div>' +
       (prior >= 0
         ? '<button class="xref" data-go="' + prior + '">' +
@@ -969,13 +1026,6 @@
         '<span class="label block__label">The problem</span>' +
         '<p class="sprint__problem">' + esc(s.problem) + '</p>' +
       '</div>' +
-      (s.question
-        ? '<div class="question"><span class="label block__label">The question</span>' +
-          '<p class="question__body">' + esc(s.question) + '</p></div>'
-        : '') +
-      (s.ships
-        ? '<div class="block"><span class="label block__label">What ships in two weeks</span>' + plusList(s.ships) + '</div>'
-        : '') +
       metaGrid(s) +
       '<div style="margin-top:4px"><a class="btn-solid" href="' + REQUEST_URL + '">Request to join <span>→</span></a></div>';
   }
@@ -983,18 +1033,13 @@
   // A wrapped sprint: the outcome, then the people who made it.
   function wrappedInfo(s) {
     var next = OPEN.length ? panelIndexOf(OPEN[0].code) : -1;
+    // People first, outcome last — the company is the payoff, so it sits
+    // at the foot of the column rather than leading it.
     return (next >= 0
-        ? '<button class="xref" data-go="' + next + '">' +
+        ? '<button class="xref xref--live" data-go="' + next + '">' +
           'A second room is forming on this problem <span>→</span></button>'
         : '') +
-      '<div>' +
-        '<div class="label" style="margin-bottom:13px">Outcome</div>' +
-        (s.company ? companyBlock(s.company) : tbc('company to be announced')) +
-      '</div>' +
-      '<div class="block"><div class="block__head"><span>The problem they worked on</span></div>' +
-        (s.problem ? '<p class="sprint__problem">' + esc(s.problem) + '</p>' : tbc('problem write-up pending')) +
-      '</div>' +
-      '<div class="block"><div class="block__head"><span>The founders</span></div>' +
+      '<div class="block block--flush"><div class="block__head"><span>The founders</span></div>' +
         (s.founders ? roster(s.founders) : tbc('founding team to be announced')) +
       '</div>' +
       '<div class="block"><div class="block__head"><span>The room</span><span>' + s.room.length + ' builders</span></div>' +
@@ -1003,7 +1048,10 @@
       (s.posts
         ? '<div class="block"><div class="block__head"><span>From the room</span></div>' + feed(s) + '</div>'
         : '') +
-      metaGrid(s);
+      '<div class="block"><div class="block__head"><span>Outcome</span>' +
+        (s.company ? '' : '<span>announcement pending</span>') + '</div>' +
+        (s.company ? companyBlock(s.company) : companyPending(s)) +
+      '</div>';
   }
 
   function equityPanel() {
@@ -1128,11 +1176,11 @@
       b.setAttribute('aria-current', n === i ? 'true' : 'false');
     });
 
+    // Identify the cohort rather than counting open sprints — with one
+    // sprint live, "01 — 01 open sprint" said nothing useful.
     topbarRight.innerHTML = p.type === 'sprint'
-      ? (p.sprint.phase === 'wrapped'
-          ? '<span class="count-of">cohort 01 · wrapped</span>'
-          : '<span class="count">' + pad(OPEN.indexOf(p.sprint) + 1) + '</span>' +
-            '<span class="count-of">— ' + pad(OPEN.length) + ' open sprint' + (OPEN.length === 1 ? '' : 's') + '</span>')
+      ? '<span class="count">Cohort ' + cohortNo(p.sprint) + '</span>' +
+        '<span class="count-of">· ' + (p.sprint.phase === 'wrapped' ? 'wrapped' : 'open') + '</span>'
       : '';
 
     if (i < PANELS.length - 1) {
