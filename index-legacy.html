@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sprints — Phase 01 · Seed to Fruit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Sprints brings together 8–12 people who have spent years inside a problem for two weeks of intensive remote work. By the end, a founding team emerges." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: #0c0c0a; }
+    body {
+      background: #0c0c0a;
+      color: #e8e6df;
+      font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ── Max-width wrapper ── */
+    .page-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ── Sprint window visual ── */
+    .sprint-window-section { display: flex; justify-content: center; }
+    .sprint-window {
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid var(--line);
+      background: rgba(232,230,223,0.03);
+    }
+    .sprint-window__header {
+      display: flex;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .sprint-window__dots { display: flex; gap: 7px; margin-right: auto; }
+    .sprint-window__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 0;
+    }
+    .sprint-window__header-label {
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .sprint-window__body {
+      padding: 48px 40px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+    .sprint-window__logo {
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+    }
+    .sprint-window__logo .cursor { color: var(--accent); }
+    .sprint-window__headline {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+    .sprint-window__problem {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border: 1px solid var(--line);
+      background: rgba(232,230,223,0.04);
+      font-size: 12px;
+      color: var(--fg);
+      letter-spacing: .04em;
+      cursor: default;
+    }
+    .sprint-window__problem-icon { color: var(--accent); font-size: 10px; }
+    .sprint-window__problem-arrow { color: var(--muted); }
+    .sprint-window__prompt-wrap {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(12,12,10,0.6);
+      cursor: text;
+    }
+    .sprint-window__prompt-body {
+      padding: 18px 20px 10px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: left;
+      display: flex;
+      gap: 8px;
+    }
+    .sprint-window__prompt-body .prefix { color: var(--accent); flex-shrink: 0; }
+    .sprint-window__prompt-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--accent);
+      opacity: .8;
+      animation: blink 1.1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .sprint-window__prompt-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 14px 14px;
+    }
+    .sprint-window__prompt-add {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .sprint-window__submit {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      width: 34px;
+      height: 34px;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      font-weight: 600;
+      border-radius: 0;
+    }
+    .sprint-window__submit:hover { background: #e84e1f; }
+
+    /* ── Tokens ── */
+    :root {
+      --bg:       #0c0c0a;
+      --fg:       #e8e6df;
+      --muted:    #7a7770;
+      --line:     rgba(232,230,223,0.12);
+      --accent:   #ff5722;
+      --accent-fg:#0c0c0a;
+      --card:     rgba(232,230,223,0.025);
+      --input:    rgba(232,230,223,0.04);
+      --green:    #7fb069;
+      --amber:    #e8b65a;
+      --json-key: #a8c4a0;
+      --px:       32px;
+    }
+
+    /* ── Layout helpers ── */
+    .section {
+      padding: 64px var(--px);
+      border-bottom: 1px solid var(--line);
+    }
+    .section--hero { padding: 80px var(--px); position: relative; border-bottom: 1px solid var(--line); }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .eyebrow .comment { color: var(--muted); margin-left: 12px; }
+    .h2 {
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .body-text { font-size: 14px; line-height: 1.7; color: var(--muted); }
+
+    /* ── Status bar ── */
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px var(--px);
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+    .statusbar__left, .statusbar__right { display: flex; gap: 24px; align-items: center; }
+    .statusbar .dot { color: var(--accent); }
+    .statusbar .open { color: var(--green); }
+
+    /* ── Tick strip ── */
+    .tickstrip {
+      display: flex;
+      align-items: flex-end;
+      height: 14px;
+      padding: 0 var(--px);
+      border-bottom: 1px solid var(--line);
+    }
+    .tick {
+      flex: 1;
+      border-right: 0.5px solid var(--line);
+    }
+    .tick--major { height: 14px; }
+    .tick--mid   { height: 8px; }
+    .tick--minor { height: 4px; }
+
+    /* ── Hero ── */
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      margin-bottom: 32px;
+      text-transform: uppercase;
+    }
+    .hero-h1 {
+      font-size: 78px;
+      font-weight: 500;
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      margin-bottom: 0;
+      color: var(--fg);
+    }
+    .hero-h1 .cursor { color: var(--accent); }
+    .hero-sub {
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--muted);
+      margin-top: 20px;
+      max-width: 800px;
+    }
+    .hero-sub .prefix { color: var(--accent); }
+    /* Thesis section */
+    .thesis-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 480px; align-items: stretch; }
+    .thesis-content { padding: 72px 56px; display: flex; flex-direction: column; justify-content: center; }
+    .thesis-photo-col { overflow: hidden; position: relative; }
+    .thesis-photo-strip { display: flex; width: 100%; height: 100%; overflow: hidden; position: relative; }
+    .thesis-photo-track { display: flex; align-items: stretch; gap: 16px; flex-shrink: 0; height: 100%; animation: thesis-scroll 28s linear infinite; padding: 16px; box-sizing: border-box; }
+    .thesis-photo-track img { height: 100%; width: auto; min-width: 220px; max-width: 320px; object-fit: cover; display: block; flex-shrink: 0; border-radius: 12px; }
+    @keyframes thesis-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .thesis-photo-strip:hover .thesis-photo-track { animation-play-state: paused; }
+    .thesis {
+      max-width: 800px;
+      padding: 24px 28px;
+      background: var(--card);
+      border-left: 2px solid var(--accent);
+      margin: 40px 0;
+    }
+    .thesis__label {
+      font-size: 11px;
+      letter-spacing: .16em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .thesis__body { font-size: 16px; line-height: 1.7; color: var(--fg); }
+    .cta-row { display: flex; align-items: center; gap: 20px; margin-top: 48px; }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 22px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: none;
+      text-decoration: none;
+    }
+    .cta-btn:hover { background: #e84e1f; }
+    .cta-btn .dollar { opacity: .6; }
+    .cta-note { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+    .hero-stat {
+      position: absolute;
+      top: 80px;
+      right: var(--px);
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+      text-align: right;
+    }
+    .hero-stat .status-open { color: var(--accent); }
+
+    /* ── Why (commit log) ── */
+    .commit-row {
+      display: grid;
+      grid-template-columns: 60px 60px 1fr;
+      gap: 24px;
+      padding: 28px 0;
+      border-top: 1px solid var(--line);
+      align-items: baseline;
+    }
+    .commit-keyword { color: var(--accent); font-size: 13px; letter-spacing: .1em; }
+    .commit-num { color: var(--muted); font-size: 13px; }
+    .commit-title { font-size: 22px; font-weight: 500; line-height: 1.3; margin-bottom: 10px; letter-spacing: -0.01em; }
+    .commit-body { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 760px; }
+
+    /* ── How (build script) ── */
+    .build-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .build-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 2.4fr;
+      gap: 32px;
+      padding: 28px;
+      align-items: baseline;
+    }
+    .build-row + .build-row { border-top: 1px solid var(--line); }
+    .build-step-num { color: var(--accent); font-size: 12px; letter-spacing: .1em; }
+    .build-step-title { font-size: 18px; font-weight: 500; line-height: 1.25; }
+    .build-step-body { color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .build-footer {
+      border-top: 1px solid var(--line);
+      padding: 20px 28px;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(127,176,105,0.05);
+    }
+    .build-footer .check { color: var(--green); }
+
+    /* ── Equity ── */
+    .equity-bar-wrap { margin-bottom: 32px; }
+    .equity-bar {
+      display: flex;
+      height: 56px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .equity-slice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .06em;
+    }
+    .equity-bar-labels {
+      display: flex;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .equity-bar-label { padding-right: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    .json-block {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 24px;
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .json-brace  { color: var(--muted); }
+    .json-key    { color: var(--json-key); }
+    .json-num    { color: var(--accent); }
+    .json-comment{ color: var(--muted); }
+    .equity-callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .callout {
+      padding: 24px;
+      border: 1px solid var(--line);
+    }
+    .callout__label {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .callout__body { font-size: 14px; line-height: 1.7; color: var(--fg); }
+
+    /* ── Host ── */
+    .host-eyebrow {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 40px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .host-intro { display: none; }
+    .host-name {
+      font-size: 80px;
+      font-weight: 500;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      margin-bottom: 16px;
+    }
+    .host-name .dot { color: var(--accent); }
+    .host-bio { font-size: 15px; color: var(--muted); line-height: 1.5; max-width: 560px; letter-spacing: .01em; }
+    .host-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: stretch; min-height: 560px; }
+    .host-photo-col { overflow: hidden; }
+    .host-photo-col img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .partner-essay { padding: 0; }
+.partner-photo-banner { position: relative; width: 100%; height: 820px; overflow: hidden; background: #d8d6d2; }
+    .partner-photo-banner img { width: 100%; height: 100%; object-fit: cover; object-position: center 0%; display: block; }
+    .partner-photo-banner--ahmed { height: 720px; background: #d8d6d2; }
+    .partner-photo-banner--ahmed img { object-fit: contain; object-position: center; }
+    .partner-photo-banner .corner { position: absolute; width: 28px; height: 28px; border-color: #2a2a26; border-style: solid; border-width: 0; }
+    .partner-photo-banner .corner.tl { top: 16px; left: 16px; border-top-width: 1.5px; border-left-width: 1.5px; }
+    .partner-photo-banner .corner.tr { top: 16px; right: 16px; border-top-width: 1.5px; border-right-width: 1.5px; }
+    .partner-photo-banner .corner.bl { bottom: 16px; left: 16px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+    .partner-photo-banner .corner.br { bottom: 16px; right: 16px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+    .partner-photo-banner .rec-bar { position: absolute; top: 28px; left: 64px; display: flex; align-items: center; gap: 28px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #2a2a26; }
+    .partner-photo-banner .rec-bar .rec-dot { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); }
+    .partner-photo-banner .rec-bar .rec-dot::before { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; display: inline-block; }
+    .partner-photo-banner .overlay-name { position: absolute; left: 64px; top: 50%; transform: translateY(-50%); max-width: 45%; }
+    .partner-photo-banner .overlay-name h2 { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: #1a1a18; margin: 0 0 16px; }
+    .partner-photo-banner .overlay-name h2 .underscore { color: var(--accent); }
+    .partner-photo-banner .overlay-name .sub { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: #4a4a44; letter-spacing: 0; }
+    .partner-photo-banner .overlay-name .sub .arrow { color: var(--accent); margin-right: 8px; }
+    .partner-essay-body { padding: 72px var(--px) 56px; max-width: 980px; }
+    .partner-tag { display: inline-block; border: 1.5px solid var(--accent); color: var(--accent); background: rgba(255,87,34,0.12); padding: 8px 20px; border-radius: 999px; font-size: 14px; letter-spacing: 0.1em; margin-bottom: 40px; font-family: 'JetBrains Mono', monospace; }
+    .partner-headline { font-family: inherit; font-weight: 600; font-size: 100px; line-height: 0.92; letter-spacing: -0.04em; color: var(--fg); margin: 0 0 40px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .partner-headline .chev { color: var(--accent); font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 0.78em; }
+    .essay-lede { font-family: inherit; font-weight: 400; font-size: 22px; line-height: 1.5; color: var(--muted); max-width: 760px; margin: 0 0 52px; }
+    .built-with-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 6px; text-transform: uppercase; }
+    .built-with-name { font-family: inherit; font-size: 22px; font-weight: 600; color: var(--fg); margin-bottom: 4px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.01em; }
+    .built-with-name .chev { color: var(--accent); font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+    .built-with-bio { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); line-height: 1.4; margin-bottom: 28px; max-width: 560px; }
+    .sprint-status { display: flex; width: fit-content; align-items: center; gap: 10px; color: var(--green); padding: 0; font-family: inherit; font-size: 14px; letter-spacing: 0; font-weight: 400; margin-bottom: 20px; }
+    .sprint-status .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; }
+    .partner-request-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--accent-fg); border: none; padding: 14px 22px; font-family: inherit; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; cursor: pointer; border-radius: 4px; }
+    .partner-request-btn:hover { background: #e84e1f; }
+    .partner-request-btn .dollar { color: var(--accent-fg); opacity: 0.7; }
+    .essay-footer { display: flex; justify-content: space-between; align-items: center; padding: 18px var(--px); border-top: 1px solid var(--line); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.08em; }
+    .essay-footer .sprint-status { font-size: 12px; letter-spacing: 0.08em; margin-bottom: 0; gap: 8px; }
+    .essay-footer .sprint-status .dot { width: 7px; height: 7px; }
+    @media (max-width: 480px) {
+      .partner-photo-banner { height: 400px; }
+      .partner-photo-banner img { object-position: center 0%; }
+      .partner-photo-banner .overlay-name { left: 20px; max-width: 55%; top: 56px; transform: none; bottom: auto; }
+      .partner-photo-banner .overlay-name h2 { font-size: 22px; margin-bottom: 6px; color: #1a1a18; }
+      .partner-photo-banner .overlay-name .sub { font-size: 12px; color: #4a4a44; }
+      .partner-photo-banner .rec-bar { left: 20px; top: 18px; font-size: 10px; gap: 12px; }
+      .partner-photo-banner .corner { width: 14px; height: 14px; }
+      .partner-headline { font-size: 42px; }
+      .essay-lede { font-size: 17px; }
+      .partner-essay-body { padding: 36px 20px 36px; }
+    }
+        @media (max-width: 900px) {
+      .partner-headline { font-size: 72px; }
+      .partner-photo-banner { height: 480px; }
+      .partner-photo-banner .overlay-name { left: 32px; max-width: 60%; }
+      .partner-photo-banner .overlay-name h2 { font-size: 36px; }
+      .partner-photo-banner .rec-bar { left: 32px; }
+      .partner-essay-body { padding: 48px 24px 40px; }
+      .essay-lede { font-size: 18px; }
+      .essay-footer { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 24px; }
+    }
+    .host-text-col { padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; }
+    .host-meta { font-size: 13px; line-height: 1.8; margin-top: 8px; }
+    .host-meta .toml-key { color: var(--muted); }
+    .host-meta .toml-eq  { color: var(--muted); }
+    .host-meta .toml-val { color: var(--fg); }
+    .host-profile-card {
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .host-profile-label {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .host-portrait {
+      position: relative;
+      border: 1px solid var(--line);
+      margin: 16px;
+      aspect-ratio: 4/3;
+      background: rgba(232,230,223,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .host-portrait__filename {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      font-size: 11px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .host-portrait__replace {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      font-size: 11px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .host-profile-meta {
+      padding: 16px 20px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .host-profile-meta .toml-key { color: var(--muted); }
+    .host-profile-meta .toml-eq  { color: var(--muted); margin: 0 8px; }
+    .host-profile-meta a { color: var(--accent); }
+    @media (max-width: 767px) {
+      .host-name { font-size: 48px; }
+      .host-layout { grid-template-columns: 1fr; min-height: unset; }
+      .host-photo-col { height: 320px; }
+      .thesis-layout { grid-template-columns: 1fr; }
+      .thesis-content { border-right: none; border-bottom: 1px solid var(--line); padding: 48px 32px; }
+      .thesis-photo-col { height: 280px; }
+      .host-text-col { padding: 32px 24px; }
+    }
+
+    .host-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+    .duties-label {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .duties-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+    }
+    .duty-row {
+      padding: 14px 18px;
+      font-size: 13px;
+      line-height: 1.6;
+      display: flex;
+      gap: 12px;
+    }
+    .duty-row + .duty-row { border-top: 1px solid var(--line); }
+    .duty-num { color: var(--accent); flex: 0 0 auto; }
+
+    /* ── Cohort ── */
+    .cohort-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 32px;
+    }
+    .cohort-problem { font-size: 13px; color: var(--muted); margin: 16px 0 24px; line-height: 1.6; max-width: 680px; }
+    .cohort-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .cohort-title { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; }
+    .cohort-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .cohort-pill-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .toml-rows { display: flex; flex-direction: column; gap: 12px; }
+    .toml-row {
+      display: grid;
+      grid-template-columns: 180px 12px 1fr;
+      gap: 16px;
+      font-size: 14px;
+      align-items: baseline;
+    }
+    .toml-key { color: var(--muted); letter-spacing: .06em; }
+    .toml-eq  { color: var(--muted); }
+    .toml-val { color: var(--fg); }
+
+    /* ── Sprint-starts pill (in # SPACE.OWNED section) ── */
+    .essay-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .essay-head .partner-tag { margin-bottom: 0; }
+    .date-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      border: none;
+      border-radius: 999px;
+      padding: 9px 18px;
+      background: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #0c0c0a;
+      white-space: nowrap;
+    }
+    .date-pill__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0c0c0a;
+      flex: 0 0 auto;
+    }
+    .date-pill strong { color: #0c0c0a; font-weight: 700; }
+    .date-pill .cd { color: rgba(12,12,10,0.65); }
+    @media (max-width: 480px) {
+      .essay-head { gap: 12px; margin-bottom: 32px; }
+      .date-pill { font-size: 11px; padding: 7px 13px; letter-spacing: .08em; }
+    }
+
+    /* ── Apply ── */
+    .apply-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; }
+    .apply-info-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 18px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-top: 28px;
+    }
+    .apply-info-card .dollar { color: var(--accent); }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(12,12,10,0.88);
+      z-index: 100;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+    .modal-backdrop.is-open { display: flex; align-items: flex-start; justify-content: center; }
+    .modal {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      width: 100%;
+      max-width: 860px;
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .modal-close {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: .1em;
+      padding: 5px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .modal-close:hover { border-color: rgba(232,230,223,0.3); color: var(--fg); }
+    .modal-body { padding: 40px 28px; }
+    .modal-centered { max-width: 600px; margin: 0 auto; }
+    .modal-info-title {
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 767px) {
+      .modal-body { padding: 28px 20px; }
+    }
+
+    /* ── Form ── */
+    .form { display: flex; flex-direction: column; gap: 18px; }
+    .form-field { display: flex; flex-direction: column; }
+    .form-label {
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .form-label .required { color: var(--accent); margin-left: 4px; }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: var(--input);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+    .form-input:focus, .form-textarea:focus {
+      outline: 1px solid var(--accent);
+      outline-offset: -1px;
+    }
+    .form-textarea { resize: vertical; min-height: 78px; }
+    .form-input[type="date"] { color-scheme: dark; }
+    .submit-btn {
+      margin-top: 8px;
+      padding: 14px 18px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+    .submit-btn:hover:not(:disabled) { background: #e84e1f; }
+    .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .form-error { font-size: 11px; color: #ff5722; margin-top: 4px; letter-spacing: .04em; }
+
+    /* ── Success state ── */
+    .success-panel {
+      padding: 32px 28px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .success-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .success-headline { font-size: 28px; line-height: 1.15; margin-bottom: 12px; color: var(--fg); }
+    .success-body { font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+    /* ── Closing ── */
+    .closing-note { font-size: 22px; line-height: 1.5; max-width: 920px; color: var(--fg); letter-spacing: -0.01em; }
+    .closing-eyebrow {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 24px var(--px);
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: .06em;
+    }
+
+    /* ── Responsive ── */
+
+    /* Cohort title: long identifier must wrap cleanly */
+    .cohort-title { overflow-wrap: break-word; word-break: break-all; }
+
+    /* JSON block: scroll horizontally rather than overflow */
+    .json-block { overflow-x: auto; }
+
+    /* CTA row wraps on narrow widths */
+    .cta-row { flex-wrap: wrap; }
+
+    @media (max-width: 1023px) {
+      :root { --px: 24px; }
+      .hero-h1 { font-size: 56px; }
+      .hero-stat { position: static; text-align: left; margin-top: 32px; }
+      .host-grid,
+      .apply-grid,
+      .equity-callouts { grid-template-columns: 1fr; }
+      .build-row { grid-template-columns: 48px 1fr; }
+      .build-step-body { grid-column: 2; }
+      .commit-row { grid-template-columns: 48px 48px 1fr; }
+    }
+    @media (max-width: 767px) {
+      :root { --px: 16px; }
+      .hero-h1 { font-size: 40px; }
+      .hero-sub { font-size: 20px; }
+      .statusbar__left .v-hide, .statusbar__left .m-hide { display: none; }
+      .statusbar__right { gap: 12px; font-size: 10px; }
+      .build-row { grid-template-columns: 1fr; gap: 12px; padding: 20px var(--px); }
+      .build-step-body { grid-column: unset; }
+      .commit-row { grid-template-columns: 1fr; gap: 8px; }
+      .commit-keyword, .commit-num { display: none; }
+      .toml-row { grid-template-columns: 100px 12px 1fr; font-size: 12px; }
+      .cohort-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .cohort-title { font-size: 20px; }
+      .h2 { font-size: 28px; }
+      /* Equity bar: hide label text on tiny slices, show only on founders */
+      .equity-bar-labels { display: none; }
+      .equity-slice { font-size: 11px; }
+      /* Footer stacks on mobile */
+      .footer { flex-direction: column; gap: 8px; }
+      /* Modal header wraps */
+      .modal-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px 20px; }
+      .modal-body { padding: 24px 16px; }
+      /* Section padding tighter */
+      .section { padding: 48px var(--px); }
+      .section--hero { padding: 56px var(--px) 48px; }
+      .host-name { font-size: 44px; }
+    }
+
+    /* ── Partner slide — portrait + info composed as one panel ── */
+    .partner-slide {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 820px;
+      border-top: 1px solid var(--line);
+    }
+    .partner-slide__info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 72px var(--px);
+      background: var(--bg);
+    }
+    .partner-slide .partner-photo-banner { height: 100%; }
+    .partner-slide .partner-photo-banner img { object-position: center 8%; }
+    .partner-slide .partner-photo-banner .rec-bar { left: 40px; top: 32px; z-index: 2; }
+    /* Scrim keeps the dark caption legible over the jacket */
+    .partner-slide .partner-photo-banner::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 42%;
+      background: linear-gradient(to top,
+        rgba(216,214,210,0.97) 0%,
+        rgba(216,214,210,0.82) 42%,
+        rgba(216,214,210,0) 100%);
+      pointer-events: none;
+    }
+    .partner-slide .partner-photo-banner .overlay-name {
+      left: 40px;
+      right: 40px;
+      top: auto;
+      bottom: 48px;
+      transform: none;
+      max-width: none;
+      z-index: 2;
+    }
+    .partner-slide .partner-photo-banner .overlay-name h2 { font-size: 44px; margin-bottom: 12px; }
+    .partner-slide .partner-photo-banner .overlay-name .sub { font-size: 15px; }
+
+    /* Typography re-scaled for the narrower info column */
+    .partner-slide__info .essay-head { margin-bottom: 36px; }
+    .partner-slide__info .partner-headline {
+      font-size: clamp(44px, 5.2vw, 76px);
+      margin-bottom: 28px;
+    }
+    .partner-slide__info .essay-lede {
+      font-size: 17px;
+      line-height: 1.55;
+      max-width: 52ch;
+      margin-bottom: 40px;
+    }
+    .partner-slide__info .built-with-bio { margin-bottom: 26px; }
+    .partner-slide__info .partner-request-btn { align-self: flex-start; }
+
+    @media (max-width: 1023px) {
+      .partner-slide__info { padding: 56px var(--px); }
+      .partner-slide .partner-photo-banner .rec-bar { left: 28px; }
+      .partner-slide .partner-photo-banner .overlay-name { left: 28px; right: 28px; bottom: 36px; }
+      .partner-slide .partner-photo-banner .overlay-name h2 { font-size: 34px; }
+    }
+    @media (max-width: 899px) {
+      .partner-slide { grid-template-columns: 1fr; min-height: 0; }
+      .partner-slide__photo { order: -1; }
+      .partner-slide .partner-photo-banner { height: 460px; }
+      .partner-slide .partner-photo-banner .overlay-name { bottom: 32px; top: auto; }
+      .partner-slide .partner-photo-banner .overlay-name h2 { font-size: 30px; }
+      .partner-slide .partner-photo-banner .overlay-name .sub { font-size: 13px; }
+    }
+    @media (max-width: 479px) {
+      .partner-slide__info { padding: 40px var(--px); }
+      .partner-slide .partner-photo-banner { height: 380px; }
+      .partner-slide .partner-photo-banner .rec-bar { left: 20px; top: 18px; }
+      .partner-slide .partner-photo-banner .overlay-name { left: 20px; right: 20px; bottom: 24px; }
+      .partner-slide .partner-photo-banner .overlay-name h2 { font-size: 24px; margin-bottom: 6px; }
+      .partner-slide .partner-photo-banner .overlay-name .sub { font-size: 12px; }
+      .partner-slide__info .essay-lede { font-size: 16px; margin-bottom: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Status bar — full width -->
+  <div class="statusbar" role="banner">
+    <div class="statusbar__left">
+      <span><span class="dot" aria-hidden="true">●</span> seed-to-fruit / sprints</span>
+      <span class="v-hide">v0.1.0</span>
+      <span class="m-hide">main</span>
+    </div>
+    <div class="statusbar__right">
+      <span>cohort_01.status: <span class="open">OPEN</span></span>
+      <span id="js-date">2026-05-05</span>
+    </div>
+  </div>
+
+  <!-- Tick strip — full width -->
+  <div class="tickstrip" aria-hidden="true" id="js-ticks"></div>
+
+<div class="page-wrap">
+
+  <!-- Hero -->
+  <section class="section section--hero">
+    <p class="hero-eyebrow"># README · Sprints — by Seed to Fruit</p>
+    <h1 class="hero-h1">SPRINTS<span class="cursor">_</span></h1>
+    <p class="hero-sub">
+      <span class="prefix" aria-hidden="true">&gt; </span>an experiment in assembling companies, by Seed to Fruit
+    </p>
+
+    <div class="cta-row">
+      <a class="cta-btn" id="open-modal-btn" href="request.html">
+        <span class="dollar" aria-hidden="true">$</span> request_to_join <span aria-hidden="true">→</span>
+      </a>
+      <span class="cta-note">First cohort opening soon. Invite-only.</span>
+    </div>
+
+    <div class="hero-stat" aria-label="Sprint details">
+      <div>phase    : 01 / sprints</div>
+      <div>duration : 2 weeks</div>
+      <div>group    : 8–12</div>
+      <div>cohort   : 01</div>
+      <div>starts   : 2026-07-14</div>
+      <div class="status-open">status   : open</div>
+    </div>
+  </section>
+
+  <!-- Thesis -->
+  <section class="section section--thesis" style="padding:0;">
+    <div class="thesis-layout">
+      <div class="thesis-content">
+        <div class="thesis__label">// thesis</div>
+        <p class="thesis__body">Sprints brings together 8–12 people who have spent years inside a problem: engineers, designers, and ex-founders. For two weeks of intensive work. By the end, everyone in the room owns a piece of what gets built.</p>
+      </div>
+      <div class="thesis-photo-col">
+        <div class="thesis-photo-strip">
+          <div class="thesis-photo-track">
+            <img src="office.png" alt="Office space" />
+            <img src="Building.png" alt="Sprints building" />
+            <img src="host-portrait.jpg" alt="Host portrait" />
+            <img src="office.png" alt="Office space" />
+            <img src="Building.png" alt="Sprints building" />
+            <img src="host-portrait.jpg" alt="Host portrait" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cohort 02 -->
+  <section class="section" style="padding:0;">
+    <div class="partner-essay">
+      <div class="essay-footer">
+        <span>seed-to-fruit / sprints / partner · spatial_ai</span>
+        <span class="sprint-status" style="justify-content:flex-end;"><span class="dot"></span> sprint_open</span>
+      </div>
+      <div class="partner-slide">
+        <div class="partner-slide__info">
+          <div class="essay-head">
+            <div class="partner-tag"># SPACE.OWNED</div>
+            <div class="date-pill" aria-label="Sprint starts July 14">
+              <span class="date-pill__dot" aria-hidden="true"></span>
+              Sprint starts <strong>Jul 14</strong> · <span class="cd" id="js-countdown">T-minus — days</span>
+            </div>
+          </div>
+          <h1 class="partner-headline"><a href="problem.html" style="color:inherit;text-decoration:none;">Spatial AI <span class="chev">&gt;</span></a></h1>
+          <p class="essay-lede">Spatial AI is the ability for machines and software systems to: perceive 3D environments, and localize themselves within them, reason and predict physical interactions, and act within physical space. <a href="problem.html" style="color:var(--accent);border-bottom:1px solid var(--accent);padding-bottom:1px;">Learn more →</a></p>
+          <div class="built-with-label">BUILT WITH</div>
+          <div class="built-with-name"><a href="partner.html" style="color:inherit;">Maien Hamed <span class="chev">&gt;</span></a></div>
+          <p class="built-with-bio">Ex-Meta Reality Labs Research. PhD in computational mechanics.</p>
+          <button class="partner-request-btn" onclick="window.location.href='request.html'">
+            <span class="dollar" aria-hidden="true">$</span> request_to_join <span aria-hidden="true">→</span>
+          </button>
+        </div>
+        <div class="partner-slide__photo partner-photo-banner">
+          <img src="maien-hamed.jpg" alt="Maien Hamed — Space.Owned" loading="lazy" decoding="async" />
+          <div class="rec-bar">
+            <span class="rec-dot">REC</span>
+            <span>BUILD WITH</span>
+          </div>
+          <div class="overlay-name">
+            <h2>Maien.Hamed<span class="underscore">_</span></h2>
+            <div class="sub"><span class="arrow">&gt;</span>Ex-Meta, PhD in computational mechanics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 02 Equity -->
+  <section id="equity" class="section">
+    <p class="eyebrow"># 02 · Equity for all <span class="comment">// cap_table.json</span></p>
+    <h2 class="h2">Everyone who shows up gets a piece.</h2>
+    <p class="body-text" style="max-width:720px;margin-bottom:40px;">When a company forms out of a Sprint, the cap table is split four ways. The 2–3 founders who continue own the majority. The rest is held for the people and partners who made the company possible.</p>
+
+    <!-- Stacked bar -->
+    <div class="equity-bar-wrap" role="img" aria-label="Equity split: 85% Founders, 7% Seed to Fruit, 5% The Room, 3% Host">
+      <div class="equity-bar">
+        <div class="equity-slice" style="width:85%;background:var(--accent);color:#fff;border-right:1px solid var(--bg);">85%</div>
+        <div class="equity-slice" style="width:7%;background:var(--green);color:var(--bg);border-right:1px solid var(--bg);">7%</div>
+        <div class="equity-slice" style="width:5%;background:var(--muted);color:#fff;border-right:1px solid var(--bg);">5%</div>
+        <div class="equity-slice" style="width:3%;background:var(--amber);color:var(--bg);">3%</div>
+      </div>
+      <div class="equity-bar-labels" aria-hidden="true">
+        <div class="equity-bar-label" style="width:85%">Founders</div>
+        <div class="equity-bar-label" style="width:7%">Seed to Fruit</div>
+        <div class="equity-bar-label" style="width:5%">The Room</div>
+        <div class="equity-bar-label" style="width:3%">Host</div>
+      </div>
+    </div>
+
+    <!-- JSON block -->
+    <div class="json-block" aria-label="Cap table JSON">
+      <span class="json-brace">{</span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"founders"</span><span class="json-brace">: </span><span class="json-num">0.85</span><span class="json-brace">,</span>  <span class="json-comment">// the 2–3 who continue</span></span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"seed_to_fruit"</span><span class="json-brace">: </span><span class="json-num">0.07</span><span class="json-brace">,</span></span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"host"</span><span class="json-brace">: </span><span class="json-num">0.03</span><span class="json-brace">,</span></span><br>
+      <span style="padding-left:24px;display:inline-block"><span class="json-key">"the_room"</span><span class="json-brace">: </span><span class="json-num">0.05</span>  <span class="json-comment">// everyone who showed up</span></span><br>
+      <span class="json-brace">}</span>
+    </div>
+
+    <!-- Callouts -->
+    <div class="equity-callouts">
+      <div class="callout">
+        <div class="callout__label">// activation</div>
+        <p class="callout__body">Equity only activates if a company forms. If no team continues, the whole thing dissolves and nobody gets anything. But if 2–3 people say "we're doing this," everyone who was in that room owns a piece.</p>
+      </div>
+      <div class="callout">
+        <div class="callout__label">// network</div>
+        <p class="callout__body">The people who don't continue become the company's most valuable asset: a small, dense network of operators and builders who already know the problem cold.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Why Sprints -->
+  <section id="why" class="section">
+    <p class="eyebrow"># 03 · Why Sprints</p>
+    <div>
+      <div class="commit-row">
+        <span class="commit-keyword">commit</span>
+        <span class="commit-num">01</span>
+        <div>
+          <div class="commit-title">99% of startups will fail.</div>
+          <p class="commit-body">Everyone says that most startups fail, and that's just the startup math. But is it? Or is it the predictable result of a specific way of assembling companies that almost nobody questions? We built Sprints to test that. It's an experiment in assembling companies.</p>
+        </div>
+      </div>
+      <div class="commit-row">
+        <span class="commit-keyword">commit</span>
+        <span class="commit-num">02</span>
+        <div>
+          <div class="commit-title">Right problem, right people, right time.</div>
+          <p class="commit-body">Almost everything else is secondary. Most accelerators will waste your time on: workshops, panels, pitch nights, and events. But the real work is in choosing the right problem, finding the right people, at the right time, and creating the conditions where a real company can emerge.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 How it works -->
+  <section id="how" class="section">
+    <p class="eyebrow"># 04 · How it works <span class="comment">// build_company.sh</span></p>
+    <div class="build-card">
+      <div class="build-row">
+        <span class="build-step-num">&gt; 01</span>
+        <div class="build-step-title">A problem is chosen.</div>
+        <p class="build-step-body">Seed to Fruit starts by picking something that is worth working on: an industry, a problem, or an idea. Something like "How homes get built", or "Teaching kids a second language". Real, specific, hard.</p>
+      </div>
+      <div class="build-row">
+        <span class="build-step-num">&gt; 02</span>
+        <div class="build-step-title">A room is assembled.</div>
+        <p class="build-step-body">We try to find 8 to 12 people who are the most relevant to the problem, people who know the industry in and out, engineers who've been hacking on it, founders who tried and failed, designers who've been thinking about it for years.</p>
+      </div>
+      <div class="build-row">
+        <span class="build-step-num">&gt; 03</span>
+        <div class="build-step-title">Two weeks, remote.</div>
+        <p class="build-step-body">Conditions designed and engineered for something to emerge. The Host anchors judgment. Everyone works on the problem together, no pitches, no demo days, just the work.</p>
+      </div>
+      <div class="build-row">
+        <span class="build-step-num">&gt; 04</span>
+        <div class="build-step-title">A founding team is selected.</div>
+        <p class="build-step-body">At the end, Seed to Fruit and the Host invite 3–5 of the strongest to form a company. Everyone else becomes a shareholder and part of the network around it.</p>
+      </div>
+      <div class="build-footer">
+        <span class="check" aria-hidden="true">✓</span> exit code 0 — founding team identified
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing note -->
+  <section class="section">
+    <div class="closing-eyebrow">// note</div>
+    <p class="closing-note">Sprints is Phase 1. After the two weeks, the founding team that emerges goes into a 3-month residency to build the company. We'll talk about that later. For now, it's just sprints.</p>
+  </section>
+
+
+  <!-- Footer -->
+</div><!-- /page-wrap -->
+
+  <!-- Footer — full width -->
+  <footer class="footer">
+    <span>© 2026 Seed to Fruit. Confidential. For review only.</span>
+    <span>seedtofruit.ca/sprints · main · v0.1.0</span>
+  </footer>
+
+  <script>
+    // ── Tick strip ──
+    (function () {
+      const strip = document.getElementById('js-ticks');
+      for (let i = 0; i < 80; i++) {
+        const d = document.createElement('div');
+        d.className = 'tick ' + (i % 10 === 0 ? 'tick--major' : i % 5 === 0 ? 'tick--mid' : 'tick--minor');
+        strip.appendChild(d);
+      }
+    })();
+
+    // ── Live date ──
+    (function () {
+      const el = document.getElementById('js-date');
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      el.textContent = `${y}-${m}-${d}`;
+    })();
+
+    // ── Sprint countdown (starts 2026-07-14) ──
+    (function () {
+      const el = document.getElementById('js-countdown');
+      if (!el) return;
+      const start = new Date(2026, 6, 14); // month is 0-indexed → July
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const days = Math.round((start - today) / 86400000);
+      if (days > 1) el.textContent = `T-minus ${days} days`;
+      else if (days === 1) el.textContent = 'T-minus 1 day';
+      else if (days === 0) el.textContent = 'today';
+      else el.textContent = 'in progress';
+    })();
+  </script>
+</body>
+</html>

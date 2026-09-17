@@ -7,3 +7,4 @@ directions.jsx
 tweaks-panel.jsx
 README.md
 .vercel
+.claude/settings.local.json

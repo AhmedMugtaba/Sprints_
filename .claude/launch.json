@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "/Users/ahmedali/Downloads/design_handoff_sprints_launch/.claude/serve.py"
+      ],
+      "port": 4599,
+      "autoPort": true
+    }
+  ]
+}

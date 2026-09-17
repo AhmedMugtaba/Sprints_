@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>What is Spatial AI — Sprints</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #14120f;
+    --bg-rule: #1c1a16;
+    --ink: #ece8de;
+    --ink-soft: #bcb6a6;
+    --muted: #8a8576;
+    --muted-soft: #5e5a4f;
+    --line: rgba(236,232,222,0.18);
+    --line-soft: rgba(236,232,222,0.10);
+    --accent: #ff7043;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ── top utility bar ── */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 56px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .top a { color: var(--muted); text-decoration: none; }
+  .top a:hover { color: var(--ink); }
+  .top .left { display: flex; gap: 28px; align-items: center; }
+  .top .right { display: flex; gap: 28px; align-items: center; }
+  .top .dot { color: var(--accent); }
+
+  /* ── title block ── */
+  .title-block {
+    padding: 120px 56px 80px;
+    display: flex;
+    justify-content: center;
+  }
+  .title-inner {
+    width: 100%;
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .title-block h1 {
+    margin: 0;
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 88px;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-wrap: balance;
+    grid-column: 2;
+  }
+  .title-block h1 .accent { color: var(--accent); }
+  .title-block h1 .caret {
+    display: inline-block;
+    width: 0.5em;
+    height: 0.85em;
+    background: var(--accent);
+    vertical-align: -0.08em;
+    margin-left: 0.08em;
+    animation: blink 1.1s steps(2, end) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .title-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255,112,67,0.10);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 28px;
+    grid-column: 2;
+    width: fit-content;
+  }
+
+  /* ── two-column layout ── */
+  .page {
+    display: flex;
+    justify-content: center;
+    padding: 0 56px 120px;
+  }
+  .page-inner {
+    width: 100%;
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  /* ── sticky left nav ── */
+  nav.toc {
+    position: sticky;
+    top: 40px;
+    align-self: start;
+    padding-top: 8px;
+  }
+  nav.toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: toc;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  nav.toc li {
+    counter-increment: toc;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 8px;
+    align-items: baseline;
+  }
+  nav.toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted-soft);
+    letter-spacing: .12em;
+  }
+  nav.toc a {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+  nav.toc a:hover { color: var(--accent); }
+  nav.toc a.current { color: var(--accent); }
+  nav.toc li:has(a.current)::before { color: var(--accent); }
+
+  nav.toc .toc-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    margin-bottom: 22px;
+    padding-left: 0;
+  }
+
+  /* ── article body ── */
+  article {
+    max-width: 720px;
+    color: var(--ink);
+  }
+  article .lede {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0 0 80px;
+    text-wrap: pretty;
+  }
+  article h2 {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0 0 28px;
+    scroll-margin-top: 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  article h2::before {
+    content: attr(data-num);
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: .12em;
+    padding-top: 4px;
+  }
+  article h3 {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0;
+    color: var(--ink);
+    margin: 36px 0 16px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  article p {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0 0 1.2em;
+    text-wrap: pretty;
+  }
+  article p.small {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  article section {
+    margin-bottom: 96px;
+  }
+  article section:last-child { margin-bottom: 0; }
+
+  article ul.bare {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.6em;
+    border-left: 2px solid var(--accent);
+  }
+  article ul.bare li {
+    padding: 10px 0 10px 20px;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  article ul.shifts {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 1.6em;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  article ul.shifts li {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  article ul.shifts li:last-child {
+    border-bottom: 1px solid var(--line-soft);
+  }
+  article ul.shifts .num {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: .14em;
+    padding-top: 4px;
+  }
+  article ul.shifts strong {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+    letter-spacing: -0.005em;
+  }
+  article ul.shifts span.body {
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  blockquote.pull {
+    margin: 56px 0;
+    padding: 28px 0 28px 32px;
+    border-left: 3px solid var(--accent);
+    position: relative;
+  }
+  blockquote.pull p {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  blockquote.pull .who {
+    display: block;
+    margin-top: 16px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .end-cta {
+    margin-top: 24px;
+    padding: 36px 0 0;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 28px;
+    align-items: baseline;
+  }
+  .end-cta .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .end-cta a.primary {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: .04em;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 14px 22px;
+    border-radius: 4px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .end-cta a.primary:hover { filter: brightness(1.05); }
+  .end-cta a.ghost {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+  }
+  .end-cta a.ghost:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* prompt prefix for lede line */
+  .prompt {
+    color: var(--accent);
+    margin-right: 8px;
+  }
+
+  /* footer */
+  footer.foot {
+    padding: 20px 56px 28px;
+    border-top: 1px solid var(--line-soft);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="left">
+    <span><span class="dot">●</span>&nbsp; seed&#8209;to&#8209;fruit&nbsp;/&nbsp;sprints</span>
+    <a href="#">Spaces</a>
+    <a href="#">Partners</a>
+    <a href="#">How it works</a>
+  </div>
+  <div class="right">
+    <span>cohort_01 · open</span>
+    <a href="#apply">Request to join →</a>
+  </div>
+</div>
+
+<header class="title-block">
+  <div class="title-inner">
+    <span class="title-tag"><span style="font-family: var(--mono)">#</span>&nbsp;space.owned</span>
+    <h1>What is<br/>Spatial&nbsp;<span class="accent">AI</span><span class="caret"></span></h1>
+  </div>
+</header>
+
+<div class="page">
+  <div class="page-inner">
+
+    <nav class="toc" aria-label="On this page">
+      <div class="toc-eyebrow">// on this page</div>
+      <ol>
+        <li><a href="#flat-world" class="current">The flat world</a></li>
+        <li><a href="#bottleneck">The bottleneck</a></li>
+        <li><a href="#unlock">What just unlocked</a></li>
+        <li><a href="#layer">The layer underneath</a></li>
+        <li><a href="#opportunity">Why now, why this</a></li>
+        <li><a href="#sprint">Spend two weeks on it</a></li>
+      </ol>
+    </nav>
+
+    <article>
+
+      <p class="lede"><span class="prompt">&gt;</span>People often ask us why we're spending a cohort on Spatial AI. Here is the short version — what the problem is, why software has failed at it for decades, and why a small team has a real shot at it now.</p>
+
+      <section id="flat-world">
+        <h2 data-num="01">The flat world</h2>
+        <p>For most of computing history, software has lived in a flat world: text, tables, 2D images. Even the most advanced AI models, until recently, reasoned only about language and pixels.</p>
+        <p>But reality isn't flat. It is three&#8209;dimensional, dynamic, and bound by physics. And nearly every trillion&#8209;dollar industry — manufacturing, mining, construction, agriculture, logistics, energy — operates inside that world.</p>
+      </section>
+
+      <section id="bottleneck">
+        <h2 data-num="02">The bottleneck</h2>
+        <p>The gap between what software understands and what reality demands has been the bottleneck for decades. Even sophisticated engineering organizations carry it:</p>
+        <ul class="bare">
+          <li>CAD disconnected from reality.</li>
+          <li>Simulations disconnected from operations.</li>
+          <li>Robotics disconnected from environmental understanding.</li>
+          <li>AI disconnected from physical constraints.</li>
+        </ul>
+        <p>The result is expensive site visits, manual surveying, downtime, safety risk, slow design iteration, reactive maintenance, and trillions of dollars of industrial data that nothing can act on.</p>
+
+        <blockquote class="pull">
+          <p>For a long time, this looked like an unsolvable problem. Now it doesn't.</p>
+          <span class="who">— Maien Hamed, partner</span>
+        </blockquote>
+      </section>
+
+      <section id="unlock">
+        <h2 data-num="03">What just unlocked</h2>
+        <p>Five enabling shifts crossed practical thresholds at almost the same moment:</p>
+
+        <ul class="shifts">
+          <li>
+            <span class="num">01</span>
+            <div>
+              <strong>Sensors became cheap and good.</strong>
+              <span class="body">LiDAR, RGB&#8209;D cameras, drones, IMUs, edge compute — the perception stack now ships in commodity hardware.</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <div>
+              <strong>AI models became geometry&#8209;aware.</strong>
+              <span class="body">NeRFs, Gaussian splatting, foundation vision models, and multimodal transformers transformed scene understanding.</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <div>
+              <strong>Robotics became commercially viable.</strong>
+              <span class="body">Warehouses, mining, construction, agriculture, logistics, inspection — all automating at once, not one at a time.</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">04</span>
+            <div>
+              <strong>Simulation and AI converged.</strong>
+              <span class="body">Industrial simulation is now accelerated and approximated by ML surrogates and learned physical models.</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">05</span>
+            <div>
+              <strong>Digital twin demand exploded.</strong>
+              <span class="body">Organizations want continuously&#8209;updated operational models, not static CAD files and disconnected dashboards.</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section id="layer">
+        <h2 data-num="04">The layer underneath</h2>
+        <p>Spatial AI is the layer underneath all of this. The ability for machines and software to perceive 3D environments, localize within them, build persistent world models, reason about geometry and motion, predict physical interactions, and act in physical space.</p>
+        <p>This isn't a single market. It is the substrate of robotics, embodied AI, digital twins, geospatial intelligence, industrial modernization, and AI&#8209;native engineering — at the same time. The transition is analogous to the shift from web software to software that understands and manipulates reality itself.</p>
+      </section>
+
+      <section id="opportunity">
+        <h2 data-num="05">Why now, why this partner</h2>
+        <p>The partner running this space — <a href="Partner Section.html" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent);">Maien Hamed</a> — has spent 17 years building the pieces of this problem: simulation, ML infrastructure, perception, embedded systems, computational mechanics. Academia. Industrial R&amp;D. Meta Reality Labs. Now his own company.</p>
+        <p>He is ready to bet the next decade on it. The two&#8209;week sprint is how we co&#8209;select the 3–5 people he bets it with.</p>
+      </section>
+
+      <section id="sprint">
+        <h2 data-num="06">Spend two weeks on it</h2>
+        <p>If you've spent years inside any part of this — robotics, geospatial, industrial software, simulation, perception, autonomy, hardware&#8209;adjacent ML — we want to spend two weeks in a room with you.</p>
+        <p class="small">cohort_01 · dates TBD · 2026 · remote&#8209;first, North&nbsp;American timezone.</p>
+
+        <div class="end-cta" id="apply">
+          <span class="label">Next →</span>
+          <a class="primary" href="#">Request to join</a>
+          <a class="ghost" href="Partner Section.html">Meet the partner</a>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</div>
+
+<footer class="foot">
+  <span>seed&#8209;to&#8209;fruit / sprints / spaces / spatial_ai</span>
+  <span>v0.4.0 · problem page · theme:dark</span>
+</footer>
+
+<script>
+  // Highlight the current section in the TOC as the user scrolls
+  (function () {
+    const links = Array.from(document.querySelectorAll('nav.toc a'));
+    const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+    const sections = Array.from(document.querySelectorAll('article section[id]'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        const a = map.get(e.target.id);
+        if (!a) return;
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('current'));
+          a.classList.add('current');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+    sections.forEach(s => io.observe(s));
+  })();
+</script>
+
+</body>
+</html>
